@@ -1,4 +1,4 @@
-export function loadBar() {
+export function loadBar(level) {
   const style = `
     <style>
       .navbar {
@@ -52,8 +52,8 @@ export function loadBar() {
       </a>
 
       <div class="nav-right">
-        <button class="btn" onclick="location.href='./login'">Login</button>
-        <button class="btn" onclick="location.href='./signup'">Signup</button>
+        <button class="btn" onclick="location.href='${level}/login'">Login</button>
+        <button class="btn" onclick="location.href='${level}/signup'">Signup</button>
       </div>
     </div>
   `;
