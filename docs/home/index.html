@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div id="topbar"></div>
+
+  <!-- MAIN -->
+  <div class="container">
+
+    <div class="grid">
+
+      <!-- CARD 1 -->
+      <a class="card" href="../play/create?public=true">
+        <h2>Quick Play</h2>
+        <p>zufälliger Gegner</p>
+      </a>
+
+      <!-- CARD 2 -->
+      <a class="card" href="../play/create?public=false">
+        <h2>Freundschafts-Spiel</h2>
+        <p>Spieler einladen</p>
+      </a>
+
+      <!-- CARD 3 -->
+      <a class="card" href="../friends/add">
+        <h2>Freunde einladen</h2>
+        <p>füge Freunde hinzu</p>
+      </a>
+
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { loadBar } from "../api/bar.js";
+    document.getElementById("topbar").innerHTML = loadBar("..");
+
+    // session check
+    const session = sessionStorage.getItem("session-id");
+    if (!session) {
+      window.location.href = "../login";
+    }
+  </script>
+
+</body>
+</html>
