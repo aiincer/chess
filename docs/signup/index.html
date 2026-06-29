@@ -30,7 +30,6 @@
   </div>
 
   <script type="module">
-
     const form = document.getElementById("signupForm");
     const msg = document.getElementById("msg");
 
@@ -41,28 +40,69 @@
       const passwort = password.value.trim();
       const privacy = document.getElementById("privacy").checked;
 
-      if (!name || !passwort) return msg.textContent = "Felder fehlen";
-      if (!privacy) return msg.textContent = "Datenschutz fehlt";
+      if (!name || !passwort) {
+        msg.textContent = "Felder fehlen";
+        return;
+      }
+
+      if (!privacy) {
+        msg.textContent = "Datenschutz fehlt";
+        return;
+      }
 
       try {
-        const ip = await fetch("./api/ip.txt");
+        // 1. Base URL holen
+        const ip = await fetch("../api/ip.txt");
         const base = (await ip.text()).trim();
 
-        await fetch(base + "/signup", {
+        // 2. Signup Request
+        const signupRes = await fetch(base + "/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, passwort })
         });
 
-        msg.textContent = "Erfolgreich erstellt!";
-      } catch {
+        if (!signupRes.ok) {
+          msg.textContent = "Signup fehlgeschlagen";
+          return;
+        }
+
+        // 3. DIREKT LOGIN danach
+        const loginRes = await fetch(base + "/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, passwort })
+        });
+
+        const data = await loginRes.json();
+
+        if (!data.ok) {
+          msg.textContent = "Auto-Login fehlgeschlagen";
+          return;
+        }
+
+        // 4. Session speichern
+        sessionStorage.setItem("session-id", data.session);
+
+        msg.textContent = "Erstellt & eingeloggt!";
+
+        // 5. Redirect
+        setTimeout(() => {
+          window.location.href = "../home";
+        }, 600);
+
+      } catch (err) {
+        console.error(err);
         msg.textContent = "Server Fehler";
       }
     });
   </script>
+
+  <!-- BAR -->
   <script type="module">
     import { loadBar } from "../api/bar.js";
     document.getElementById("topbar").innerHTML = loadBar("..");
   </script>
+
 </body>
 </html>
