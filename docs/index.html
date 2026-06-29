@@ -2,159 +2,22 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Schach Plattform</title>
-
-  <style>
-    :root {
-      --bg: #0f1115;
-      --text: #ffffff;
-      --muted: #a0a0a0;
-      --card: #171a21;
-      --border: #2a2f3a;
-    }
-
-    [data-theme="light"] {
-      --bg: #ffffff;
-      --text: #111;
-      --muted: #555;
-      --card: #f5f6f8;
-      --border: #e6e6e6;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: 0.2s ease;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .logo img {
-      width: 28px;
-      height: 28px;
-    }
-
-    .nav-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .btn:hover {
-      border-color: #888;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 24px;
-    }
-
-    .title {
-      font-size: 56px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin: 0;
-    }
-
-    .subtitle {
-      margin-top: 8px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-box {
-      border: 1px solid var(--border);
-      background: var(--card);
-      padding: 20px 24px;
-      border-radius: 10px;
-      text-align: center;
-      min-width: 260px;
-    }
-
-    .login-box p {
-      margin: 0 0 12px 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-  </style>
+  <title>Index</title>
 </head>
 
-<body data-theme="dark">
+<body>
 
-  <div class="navbar">
-    <a class="logo" href="/">
-      <img src="./src/img/logo.png" alt="Logo">
-      Chess
-    </a>
+  <div id="topbar"></div>
 
-    <div class="nav-right">
-      <button class="btn" onclick="location.href='./login'">Login</button>
-      <button class="btn" onclick="location.href='./signup'">Signup</button>
-      <button class="btn" onclick="toggleTheme()">🌗</button>
-    </div>
+  <div style="padding:40px; text-align:center;">
+    <h1>&lt;name&gt;</h1>
+    <p>online-schach-platform</p>
+    <p>einloggen, um loszulegen</p>
   </div>
 
-  <div class="container">
-
-    <div class="center">
-
-      <div class="login-box">
-        <p>Einloggen, um loszulegen</p>
-        <button class="btn" onclick="location.href='./login'">Login</button>
-      </div>
-
-    </div>
-    <div style="text-align:center;">
-      <h1 class="title">&lt;name&gt;</h1>
-      <div class="subtitle">online-schach-platform</div>
-    </div>
-
-  </div>
-
-  <script>
-    function toggleTheme() {
-      const body = document.body;
-      const current = body.getAttribute("data-theme");
-      body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
-    }
+  <script type="module">
+    import { loadBar } from "./api/bar.js";
+    document.getElementById("topbar").innerHTML = loadBar();
   </script>
 
 </body>

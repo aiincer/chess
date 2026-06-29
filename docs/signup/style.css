@@ -2,52 +2,9 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #0f1115;
-  color: #fff;
+  color: white;
 }
 
-/* TOP BAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
-  border-bottom: 1px solid #2a2f3a;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: 600;
-}
-
-.logo img {
-  width: 28px;
-  height: 28px;
-}
-
-.nav-right {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  background: transparent;
-  border: 1px solid #2a2f3a;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.btn:hover {
-  border-color: #888;
-}
-
-/* LAYOUT */
 .container {
   height: calc(100vh - 70px);
   display: flex;
@@ -55,7 +12,6 @@ body {
   align-items: center;
 }
 
-/* CARD */
 .card {
   width: 320px;
   padding: 24px;
@@ -67,48 +23,29 @@ body {
   gap: 12px;
 }
 
-h1 {
-  margin: 0 0 10px 0;
-  font-size: 24px;
-}
-
 input {
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #2a2f3a;
   background: transparent;
   color: white;
-  outline: none;
 }
 
-input:focus {
-  border-color: #888;
+button {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: white;
+  color: black;
+  cursor: pointer;
 }
 
 .checkbox {
   font-size: 12px;
   color: #aaa;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: white;
-  color: black;
-  font-weight: bold;
-}
-
-button:hover {
-  opacity: 0.85;
 }
 
 #msg {
   font-size: 12px;
   color: #aaa;
-  min-height: 16px;
 }

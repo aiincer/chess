@@ -2,95 +2,67 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Signup</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- TOP BAR -->
-  <div class="navbar">
-    <a class="logo" href="/">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg" alt="Logo">
-      Chess
-    </a>
+  <div id="topbar"></div>
 
-    <div class="nav-right">
-      <button class="btn" onclick="location.href='/login'">Login</button>
-      <button class="btn" onclick="location.href='/signup'">Signup</button>
-    </div>
-  </div>
-
-  <!-- CONTENT -->
   <div class="container">
 
     <form id="signupForm" class="card">
       <h1>Sign Up</h1>
 
-      <input type="text" id="username" placeholder="Benutzername" required />
-      <input type="password" id="password" placeholder="Passwort" required />
+      <input id="username" placeholder="Benutzername" required />
+      <input id="password" type="password" placeholder="Passwort" required />
 
       <label class="checkbox">
-        <input type="checkbox" id="privacy" />
-        Ich akzeptiere die Datenschutzrichtlinien
+        <input type="checkbox" id="privacy">
+        Datenschutz akzeptieren
       </label>
 
-      <button type="submit">Account erstellen</button>
-
+      <button type="submit">Erstellen</button>
       <p id="msg"></p>
     </form>
 
   </div>
 
-  <script>
+  <script type="module">
+
     const form = document.getElementById("signupForm");
     const msg = document.getElementById("msg");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("username").value.trim();
-      const passwort = document.getElementById("password").value.trim();
+      const name = username.value.trim();
+      const passwort = password.value.trim();
       const privacy = document.getElementById("privacy").checked;
 
-      if (!name || !passwort) {
-        msg.textContent = "Bitte alle Felder ausfüllen.";
-        return;
-      }
-
-      if (!privacy) {
-        msg.textContent = "Bitte Datenschutz akzeptieren.";
-        return;
-      }
+      if (!name || !passwort) return msg.textContent = "Felder fehlen";
+      if (!privacy) return msg.textContent = "Datenschutz fehlt";
 
       try {
-        const ipRes = await fetch("./api/ip.txt");
-        const baseUrl = (await ipRes.text()).trim();
+        const ip = await fetch("./api/ip.txt");
+        const base = (await ip.text()).trim();
 
-        const res = await fetch(baseUrl + "/signup", {
+        await fetch(base + "/signup", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name: name,
-            passwort: passwort
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, passwort })
         });
 
-        if (res.ok) {
-          msg.textContent = "Account erstellt!";
-        } else {
-          msg.textContent = "Fehler beim Signup.";
-        }
-
-      } catch (err) {
-        console.error(err);
-        msg.textContent = "Server nicht erreichbar.";
+        msg.textContent = "Erfolgreich erstellt!";
+      } catch {
+        msg.textContent = "Server Fehler";
       }
     });
   </script>
-
+  <script type="module">
+    import { loadBar } from "../api/bar.js";
+    document.getElementById("topbar").innerHTML = loadBar();
+  </script>
 </body>
 </html>
