@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div id="topbar"></div>
+
+  <!-- CONTENT -->
+  <div class="container">
+
+    <form id="loginForm" class="card">
+      <h1>Login</h1>
+
+      <input id="username" placeholder="Benutzername" required />
+      <input id="password" type="password" placeholder="Passwort" required />
+
+      <button type="submit">Einloggen</button>
+
+      <p id="msg"></p>
+    </form>
+
+  </div>
+
+  <script>
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("username").value.trim();
+      const passwort = document.getElementById("password").value.trim();
+
+      if (!name || !passwort) {
+        msg.textContent = "Bitte alle Felder ausfüllen.";
+        return;
+      }
+
+      try {
+        // get base url
+        const ipRes = await fetch("../api/ip.txt");
+        const baseUrl = (await ipRes.text()).trim();
+
+        // login request
+        const res = await fetch(baseUrl + "/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name,
+            passwort: passwort
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          sessionStorage.setItem("session-id", data.session);
+          msg.textContent = "Login erfolgreich!";
+
+          // optional redirect
+          setTimeout(() => {
+            window.location.href = "../home";
+          }, 500);
+
+        } else {
+          msg.textContent = "Login fehlgeschlagen.";
+        }
+
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "Server nicht erreichbar.";
+      }
+    });
+  </script>
+  <script type="module">
+    import { loadBar } from "../api/bar.js";
+    document.getElementById("topbar").innerHTML = loadBar("..");
+  </script>
+
+</body>
+</html>
