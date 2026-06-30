@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freunde</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="topbar"></div>
+
+<div class="container">
+
+    <div class="friends-list" id="friendsList">
+
+        <a href="./add" class="add-friend">
+            + Freund hinzufügen
+        </a>
+
+    </div>
+
+</div>
+
+<script type="module">
+import { loadBar } from "../../api/bar.js";
+
+document.getElementById("topbar").innerHTML = loadBar("../..");
+
+const session = sessionStorage.getItem("session-id");
+
+if (!session) {
+    location.href = "../../login";
+}
+
+let api = "";
+
+async function loadFriends() {
+
+    const ip = await fetch("../../api/ip.txt");
+    api = (await ip.text()).trim();
+
+    const session = sessionStorage.getItem("session-id");
+
+    const res = await fetch(
+      api + "/friends?name=" + encodeURIComponent(session)
+    );
+
+    const data = await res.json();
+
+    const friends = data.friends ?? data;
+
+    const list = document.getElementById("friendsList");
+
+    for (const friend of friends) {
+
+        const row = document.createElement("div");
+        row.className = "friend";
+
+        row.innerHTML = `
+            <div class="friend-name">${friend}</div>
+
+            <div class="buttons">
+
+                <button class="icon-btn play">
+                    <img src="../../src/img/play.png" alt="Spielen">
+                </button>
+
+                <button class="icon-btn delete">
+                    <img src="../../src/img/delete.png" alt="Löschen">
+                </button>
+
+            </div>
+        `;
+
+        row.querySelector(".play").onclick = () => {
+            location.href = ".././play?vs=" + encodeURIComponent(friend);
+        };
+
+        row.querySelector(".delete").onclick = async () => {
+
+            if (!confirm(`Möchtest du ${friend} wirklich entfernen?`))
+                return;
+
+            await fetch(api + "/friends", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: session,
+                    friend: friend
+                })
+            });
+
+            row.remove();
+        };
+
+        list.appendChild(row);
+    }
+
+}
+
+loadFriends();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f1115;
+    color: white;
+}
+
+.container {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.friends-list {
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    background: #171a21;
+    overflow: hidden;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.add-friend {
+    display: block;
+    padding: 18px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    background: #202530;
+    border-bottom: 1px solid #2a2f3a;
+    transition: .15s;
+}
+
+.add-friend:hover {
+    background: #2b3140;
+}
+
+.friend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2a2f3a;
+}
+
+.friend:last-child {
+    border-bottom: none;
+}
+
+.friend-name {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .15s;
+}
+
+.icon-btn img {
+    width: 22px;
+    height: 22px;
+}
+
+.play {
+    background: #35b64a;
+}
+
+.play:hover {
+    background: #2f9e41;
+}
+
+.delete {
+    background: #d43c3c;
+}
+
+.delete:hover {
+    background: #b93030;
+}
