@@ -59,13 +59,13 @@ export function loadBar(level) {
   const html = sessionId
     ? `
     <div class="navbar">
-      <a class="logo" href="/">
+      <a class="logo" href="${level}/home">
         <img src="https://aiincer.github.io/chess/src/img/logo.png" alt="Logo" />
         Chess
       </a>
 
       <div class="nav-right">
-        <button class="btn" onclick="location.href='${level}/friends'">
+        <button class="btn" onclick="location.href='${level}/profile/friends'">
           Freunde
         </button>
         <img 
@@ -79,7 +79,7 @@ export function loadBar(level) {
   `
     : `
     <div class="navbar">
-      <a class="logo" href="/">
+      <a class="logo" href="${level}/">
         <img src="https://aiincer.github.io/chess/src/img/logo.png" alt="Logo" />
         Chess
       </a>
