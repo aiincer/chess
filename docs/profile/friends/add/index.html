@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Freund hinzufügen</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+<div id="topbar"></div>
+
+<div class="container">
+
+  <form id="addForm" class="card">
+
+    <h1>Freund hinzufügen</h1>
+
+    <input id="friend" placeholder="Benutzername" required />
+
+    <button type="submit">Hinzufügen</button>
+
+    <p id="msg"></p>
+
+  </form>
+
+</div>
+
+<script type="module">
+import { loadBar } from "../../../api/bar.js";
+
+document.getElementById("topbar").innerHTML = loadBar("../../..");
+
+const session = sessionStorage.getItem("session-id");
+
+if (!session) {
+  location.href = "../../../login";
+}
+
+const form = document.getElementById("addForm");
+const msg = document.getElementById("msg");
+
+let api = "";
+
+async function init() {
+  const ip = await fetch("../../../api/ip.txt");
+  api = (await ip.text()).trim();
+}
+
+init();
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const friend = document.getElementById("friend").value.trim();
+
+  if (!friend) {
+    msg.textContent = "Bitte Benutzername eingeben";
+    return;
+  }
+
+  try {
+    const res = await fetch(api + "/friends", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: session,
+        friend: friend
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.ok === true) {
+      msg.textContent = data.message;
+      document.getElementById("friend").value = "";
+    } else {
+      msg.textContent = data.message || "Fehler";
+    }
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "Server nicht erreichbar";
+  }
+
+});
+</script>
+
+</body>
+</html>
