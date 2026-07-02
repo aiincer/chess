@@ -12,20 +12,20 @@ const style = {
   pieces: {
 
     // ♟️ black
-    b: "https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt60.png",
-    t: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt60.png",
-    s: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt60.png",
-    l: "https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt60.png",
-    d: "https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt60.png",
-    k: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt60.png",
+    b: "../src/img/sets/standard/black/b.png",
+    t: "../src/img/sets/standard/black/t.png",
+    s: "../src/img/sets/standard/black/s.png",
+    l: "../src/img/sets/standard/black/l.png",
+    d: "../src/img/sets/standard/black/d.png",
+    k: "../src/img/sets/standard/black/k.png",
 
     // ♟️ white
-    B: "https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt60.png",
-    T: "https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt60.png",
-    S: "https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt60.png",
-    L: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt60.png",
-    D: "https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt60.png",
-    K: "https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt60.png"
+    B: "../src/img/sets/standard/white/b.png",
+    T: "../src/img/sets/standard/white/t.png",
+    S: "../src/img/sets/standard/white/s.png",
+    L: "../src/img/sets/standard/white/l.png",
+    D: "../src/img/sets/standard/white/d.png",
+    K: "../src/img/sets/standard/white/k.png"
 }
 };
 
