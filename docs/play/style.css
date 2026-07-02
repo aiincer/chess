@@ -115,6 +115,9 @@ body{
     font-weight:600;
 
     border-radius:8px;
+
+    border:2px solid transparent;
+    transition:box-shadow .2s ease, border-color .2s ease;
 }
 
 .whiteClock{
@@ -125,6 +128,71 @@ body{
 .blackClock{
     background:#111;
     color:#fff;
+}
+
+.activeClock{
+    border-color:#ffd54f;
+    box-shadow:0 0 0 3px rgba(255,213,79,.22), 0 0 18px rgba(255,213,79,.55);
+}
+
+#gameStatus{
+    padding:10px 12px;
+    border:1px solid #3a404d;
+    border-radius:8px;
+    color:#ffd54f;
+    text-align:center;
+    font-weight:600;
+}
+
+#promotionOverlay{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(15,17,21,.62);
+}
+
+#promotionBox{
+    display:grid;
+    grid-template-columns:repeat(4,72px);
+    gap:12px;
+    padding:18px;
+    background:#171a21;
+    border:1px solid #3a404d;
+    border-radius:10px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45);
+}
+
+#promotionTitle{
+    grid-column:1 / -1;
+    color:#f3f3f3;
+    text-align:center;
+    font-weight:600;
+}
+
+.promotionOption{
+    width:72px;
+    height:72px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:1px solid #3a404d;
+    border-radius:8px;
+    background:#222733;
+    cursor:pointer;
+}
+
+.promotionOption:hover{
+    border-color:#ffd54f;
+    box-shadow:0 0 14px rgba(255,213,79,.35);
+}
+
+.promotionOption img{
+    width:70%;
+    height:70%;
+    pointer-events:none;
 }
 
 /* Materialvorteil */

@@ -20,12 +20,12 @@ const style = {
     k: "../src/img/sets/standard/black/k.png",
 
     // ♟️ white
-    B: "../src/img/sets/standard/white/b.png",
-    T: "../src/img/sets/standard/white/t.png",
-    S: "../src/img/sets/standard/white/s.png",
-    L: "../src/img/sets/standard/white/l.png",
-    D: "../src/img/sets/standard/white/d.png",
-    K: "../src/img/sets/standard/white/k.png"
+    B: "../src/img/sets/standard/white/B.png",
+    T: "../src/img/sets/standard/white/T.png",
+    S: "../src/img/sets/standard/white/S.png",
+    L: "../src/img/sets/standard/white/L.png",
+    D: "../src/img/sets/standard/white/D.png",
+    K: "../src/img/sets/standard/white/K.png"
 }
 };
 
@@ -61,6 +61,15 @@ initColors();
 const board = document.getElementById("board");
 
 let selected = null;
+let activePlayer = "white";
+let winner = null;
+let lastMove = null;
+let promotionPending = false;
+const moveHistory = [];
+const clocks = {
+    white: 10 * 60,
+    black: 10 * 60
+};
 
 
 // 🖼️ Render
@@ -141,5 +150,75 @@ function initHasMoved(){
 
 initHasMoved();
 
+function isWhitePiece(piece){
+    return piece !== "" && piece === piece.toUpperCase();
+}
+
+function pieceColor(piece){
+    return isWhitePiece(piece) ? "white" : "black";
+}
+
+function opponent(color){
+    return color === "white" ? "black" : "white";
+}
+
+function setMoved(from, to){
+    hasMoved[to.y][to.x] = true;
+    hasMoved[from.y][from.x] = false;
+}
+
+function switchTurn(){
+    activePlayer = opponent(activePlayer);
+    updateClockDisplay();
+}
+
+function formatTime(totalSeconds){
+    const safe = Math.max(0, totalSeconds);
+    const minutes = Math.floor(safe / 60);
+    const seconds = safe % 60;
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateClockDisplay(){
+    const whiteClock = document.querySelector(".whiteClock");
+    const blackClock = document.querySelector(".blackClock");
+
+    if(whiteClock){
+        whiteClock.textContent = formatTime(clocks.white);
+        whiteClock.classList.toggle("activeClock", activePlayer === "white" && !winner);
+    }
+
+    if(blackClock){
+        blackClock.textContent = formatTime(clocks.black);
+        blackClock.classList.toggle("activeClock", activePlayer === "black" && !winner);
+    }
+}
+
+setInterval(() => {
+    if(winner) return;
+
+    clocks[activePlayer]--;
+    if(clocks[activePlayer] <= 0){
+        clocks[activePlayer] = 0;
+        winner = opponent(activePlayer);
+        resetColors();
+        selected = null;
+        updateGameStatus(`${winner === "white" ? "Weiss" : "Schwarz"} gewinnt auf Zeit`);
+    }
+
+    updateClockDisplay();
+}, 1000);
+
+function updateGameStatus(text){
+    let status = document.getElementById("gameStatus");
+    if(!status){
+        status = document.createElement("div");
+        status.id = "gameStatus";
+        document.getElementById("panel").prepend(status);
+    }
+    status.textContent = text;
+}
+
 // 🚀 START
 drawBoard();
+updateClockDisplay();
