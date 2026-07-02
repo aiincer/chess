@@ -16,13 +16,16 @@
         <h1>Spiel erstellen</h1>
 
         <div class="setting">
-            <label>Gegner</label>
+            <label id="extraLabel">gegner</label>
             <select id="opponent">
+                <option>Lokal</option>
                 <option>KI</option>
                 <option>Freund</option>
                 <option>Öffentlich</option>
+                <option>Link</option>
             </select>
         </div>
+        
 
         <div class="setting" id="extraSetting">
             <label id="extraLabel">Modell</label>
@@ -53,7 +56,16 @@
                 <option>1:1</option>
             </select>
         </div>
+        <div class="setting">
+            <label>Farbe</label>
+            <select id="color">
+                <option value="random">Zufall</option>
+                <option value="white">Weiß</option>
+                <option value="black">Schwarz</option>
+            </select>
+        </div>
 
+    </select>
         <button id="start">Spiel erstellen</button>
 
     </div>
@@ -80,6 +92,7 @@ const startBtn = document.getElementById("start");
 
 const mode = document.getElementById("mode");
 const time = document.getElementById("time");
+const color = document.getElementById("color");
 
 let api = "";
 let friendsLoaded = false;
@@ -138,6 +151,11 @@ async function updateMenu() {
     extraSelect.innerHTML = "";
     rated.disabled = false;
 
+    for (const option of opponent.options) {
+        option.disabled = option.value !== "Lokal";
+    }
+
+    // KI
     if (value === "KI") {
 
         extraSetting.style.display = "flex";
@@ -152,10 +170,10 @@ async function updateMenu() {
         `;
 
         rated.disabled = true;
-
         return;
     }
 
+    // Freund
     if (value === "Freund") {
 
         extraSetting.style.display = "flex";
@@ -172,6 +190,20 @@ async function updateMenu() {
         return;
     }
 
+    // Lokal oder Link
+    if (value === "Lokal" || value === "Link") {
+
+        extraSetting.style.display = "none";
+
+        rated.innerHTML = `
+            <option value="false">nicht gewertet</option>
+        `;
+
+        rated.disabled = true;
+        return;
+    }
+
+    // Öffentlich
     extraSetting.style.display = "none";
 
     rated.innerHTML = `
@@ -187,15 +219,68 @@ opponent.addEventListener("change", updateMenu);
 init();
 
 startBtn.onclick = () => {
-    const settings = {
-        gegner: opponent.value,
-        extra: extraSelect.value || null,
-        wertung: rated.value === "true",
-        modus: mode.value,
-        zeit: Number(time.value)
+
+    let selectedColor;
+
+    switch (color.value) {
+        case "white":
+            selectedColor = 1;
+            break;
+
+        case "black":
+            selectedColor = 0;
+            break;
+
+        default:
+            selectedColor = Math.random() < 0.5 ? 1 : 0;
+    }
+
+    let gameDetails = {
+        color: selectedColor,
+        time: time.value,
+        gameMode: mode.value
     };
 
-    console.log(settings);
+    switch (opponent.value) {
+
+        case "KI":
+            gameDetails.mode = "ai";
+            gameDetails.model = extraSelect.value;
+
+            sessionStorage.setItem(
+                "gameDetails",
+                JSON.stringify(gameDetails)
+            );
+
+            location.href = "../";
+            return;
+
+        case "Lokal":
+            gameDetails.mode = "lokal";
+            gameDetails.vs = "";
+
+            sessionStorage.setItem(
+                "gameDetails",
+                JSON.stringify(gameDetails)
+            );
+
+            location.href = "../";
+            return;
+
+        case "Freund":
+        case "Öffentlich":
+        case "Link":
+            gameDetails.mode = "online";
+            gameDetails.vs = "";
+
+            sessionStorage.setItem(
+                "gameDetails",
+                JSON.stringify(gameDetails)
+            );
+
+            location.href = "./wait";
+            return;
+    }
 };
 </script>
 

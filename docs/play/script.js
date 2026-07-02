@@ -66,11 +66,6 @@ let winner = null;
 let lastMove = null;
 let promotionPending = false;
 const moveHistory = [];
-const clocks = {
-    white: 10 * 60,
-    black: 10 * 60
-};
-
 
 // 🖼️ Render
 function drawBoard(){
@@ -184,12 +179,12 @@ function updateClockDisplay(){
     const blackClock = document.querySelector(".blackClock");
 
     if(whiteClock){
-        whiteClock.textContent = formatTime(clocks.white);
+        whiteClock.textContent = formatTime(window.clocks.white);
         whiteClock.classList.toggle("activeClock", activePlayer === "white" && !winner);
     }
 
     if(blackClock){
-        blackClock.textContent = formatTime(clocks.black);
+        blackClock.textContent = formatTime(window.clocks.black);
         blackClock.classList.toggle("activeClock", activePlayer === "black" && !winner);
     }
 }
@@ -197,9 +192,9 @@ function updateClockDisplay(){
 setInterval(() => {
     if(winner) return;
 
-    clocks[activePlayer]--;
-    if(clocks[activePlayer] <= 0){
-        clocks[activePlayer] = 0;
+    window.clocks[activePlayer]--;
+    if(window.clocks[activePlayer] <= 0){
+        window.clocks[activePlayer] = 0;
         winner = opponent(activePlayer);
         resetColors();
         selected = null;
