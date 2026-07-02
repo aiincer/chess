@@ -20,12 +20,12 @@ const style = {
     k: "../src/img/sets/standard/black/k.png",
 
     // ♟️ white
-    B: "../src/img/sets/standard/white/B.png",
-    T: "../src/img/sets/standard/white/T.png",
-    S: "../src/img/sets/standard/white/S.png",
-    L: "../src/img/sets/standard/white/L.png",
-    D: "../src/img/sets/standard/white/D.png",
-    K: "../src/img/sets/standard/white/K.png"
+    B: "../src/img/sets/standard/white/b.png",
+    T: "../src/img/sets/standard/white/t.png",
+    S: "../src/img/sets/standard/white/s.png",
+    L: "../src/img/sets/standard/white/l.png",
+    D: "../src/img/sets/standard/white/d.png",
+    K: "../src/img/sets/standard/white/k.png"
 }
 };
 
