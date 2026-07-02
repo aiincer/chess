@@ -18,7 +18,7 @@ function initLocalControls(){
                     move(x, y);
                     drawBoard();
                     initLocalControls();
-                }
+                } 
 
             } else {
 

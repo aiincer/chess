@@ -217,3 +217,4 @@ function updateGameStatus(text){
 // 🚀 START
 drawBoard();
 updateClockDisplay();
+ 
