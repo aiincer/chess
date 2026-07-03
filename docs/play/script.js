@@ -189,20 +189,30 @@ function updateClockDisplay(){
     }
 }
 
-setInterval(() => {
-    if(winner) return;
+let clockInterval = null;
 
-    window.clocks[activePlayer]--;
-    if(window.clocks[activePlayer] <= 0){
-        window.clocks[activePlayer] = 0;
-        winner = opponent(activePlayer);
-        resetColors();
-        selected = null;
-        updateGameStatus(`${winner === "white" ? "Weiss" : "Schwarz"} gewinnt auf Zeit`);
-    }
+function startClock(){
+    clearInterval(clockInterval);
 
-    updateClockDisplay();
-}, 1000);
+    clockInterval = setInterval(() => {
+        console.log("cu")
+        if (winner) return;
+        
+        if (activePlayer === "white") {
+            window.clocks["white"]--;
+        } else {
+            window.clocks["black"]--;
+        }
+        if (window.clocks[activePlayer] <= 0) {
+            window.clocks[activePlayer] = 0;
+            winner = opponent(activePlayer);
+            updateGameStatus(`${winner === "white" ? "Weiss" : "Schwarz"} gewinnt auf Zeit`);
+            clearInterval(clockInterval);
+        }
+
+        updateClockDisplay();
+    }, 1000);
+}
 
 function updateGameStatus(text){
     let status = document.getElementById("gameStatus");
@@ -217,4 +227,4 @@ function updateGameStatus(text){
 // 🚀 START
 drawBoard();
 updateClockDisplay();
- 
+startClock();

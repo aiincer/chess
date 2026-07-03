@@ -217,14 +217,14 @@ function train(games=20) {
 }
 
 
-export function getRandomMove(board, color) {
+export function getRandomMove(board, color, skill) {
     const moves = getAllMoves(board, color);
     if (!moves.length) return null;
     let bestMove = moves[0];
     let bestWins = -1;
     for (const move of moves) {
         let wins = 0;
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < skill; i++) {
             const simBoard = cloneBoard(board);
             applyMove(simBoard, move);
             const winner = playGame(

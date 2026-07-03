@@ -32,6 +32,15 @@
             <select id="extraSelect">ran1</select>
         </div>
 
+        <div class="setting" id="skillSetting" style="display:none;">
+            <label>Skill</label>
+            <select id="skillSelect">
+                <option value="1">schlecht</option>
+                <option value="2">mittel</option>
+                <option value="3">gut</option>
+            </select>
+        </div>
+
         <div class="setting">
             <label>Wertung</label>
             <select id="rated"></select>
@@ -75,18 +84,30 @@
 <script type="module">
 import { loadBar } from "../../api/bar.js";
 
+const skillMap = {
+    ran1: {
+        1: 0,
+        2: 0,
+        3: 0
+    },
+    lok1: {
+        1: 300,
+        2: 500,
+        3: 1000
+    }
+};
+
 document.getElementById("topbar").innerHTML = loadBar("..");
-
 const session = sessionStorage.getItem("session-id");
-
 if (!session) {
     location.href = "../../login";
 }
-
 const opponent = document.getElementById("opponent");
 const extraSetting = document.getElementById("extraSetting");
 const extraLabel = document.getElementById("extraLabel");
 const extraSelect = document.getElementById("extraSelect");
+const skillSetting = document.getElementById("skillSetting");
+const skillSelect = document.getElementById("skillSelect");
 const rated = document.getElementById("rated");
 const startBtn = document.getElementById("start");
 
@@ -161,6 +182,7 @@ async function updateMenu() {
     if (value === "KI") {
 
         extraSetting.style.display = "flex";
+        skillSetting.style.display = "flex";
         extraLabel.textContent = "Modell";
 
         extraSelect.innerHTML = `
@@ -180,6 +202,7 @@ async function updateMenu() {
     if (value === "Freund") {
 
         extraSetting.style.display = "flex";
+        skillSetting.style.display = "none";
         extraLabel.textContent = "Freund";
 
         rated.innerHTML = `
@@ -197,6 +220,7 @@ async function updateMenu() {
     if (value === "Lokal" || value === "Link") {
 
         extraSetting.style.display = "none";
+        skillSetting.style.display = "none";
 
         rated.innerHTML = `
             <option value="false">nicht gewertet</option>
@@ -250,6 +274,9 @@ startBtn.onclick = () => {
             gameDetails.mode = "ai";
             const selectedModel = extraSelect.value;
             gameDetails.model = selectedModel;
+            const skillLevel = skillSelect.value;
+            gameDetails.skillLevel = skillLevel;
+            gameDetails.skill = skillMap[selectedModel][skillLevel];
             sessionStorage.setItem(
                 "gameDetails",
                 JSON.stringify(gameDetails)

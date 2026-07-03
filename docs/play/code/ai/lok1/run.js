@@ -139,7 +139,7 @@ function finishLocalMove(entry){
     // Schwarze KI
     if(!winner && !promotionPending && gameDetails.mode === "ai" && activePlayer === aiColor){
         setTimeout(() => {
-            const move = getRandomMove(boardMatrix, aiColor);
+            const move = getRandomMove(boardMatrix, aiColor, gameDetails.skill);
             if(!move) return;
             executeLocalMove(
                 {x: move.from[0], y: move.from[1]},
@@ -196,7 +196,7 @@ initLocalControls();
 window.addEventListener("load", () => {
     if(gameDetails.mode === "ai" && aiColor === "white"){
         setTimeout(() => {
-            const move = getRandomMove(boardMatrix, "white");
+            const move = getRandomMove(boardMatrix, "white", gameDetails.skill);
             if(!move) return;
             executeLocalMove(
                 {x: move.from[0], y: move.from[1]},
