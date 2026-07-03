@@ -1,5 +1,9 @@
 import { getRandomMove } from "./ai/ran1.js";
 
+const gameDetails = JSON.parse(sessionStorage.getItem("gameDetails") || "{}");
+const playerColor = gameDetails.color === 1 ? "white" : "black";
+const aiColor = playerColor === "white" ? "black" : "white";
+
 function initLocalControls(){
 
     const squares = document.querySelectorAll(".square");
@@ -133,9 +137,9 @@ function finishLocalMove(entry){
     }
     updateGameInfo();
     // Schwarze KI
-    if(!winner && !promotionPending && activePlayer === "black"){
+    if(!winner && !promotionPending && gameDetails.mode === "ai" && activePlayer === aiColor){
         setTimeout(() => {
-            const move = getRandomMove(boardMatrix, "black");
+            const move = getRandomMove(boardMatrix, aiColor);
             if(!move) return;
             executeLocalMove(
                 {x: move.from[0], y: move.from[1]},
