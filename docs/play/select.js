@@ -38,6 +38,10 @@
                     setClocks(baseSeconds);
                     loadScript("./code/ai/ran1/run.js");
                     break;
+                case "lok1":
+                    setClocks(baseSeconds);
+                    loadScript("./code/ai/lok1/run.js");
+                    break;
             }
             break;
 
