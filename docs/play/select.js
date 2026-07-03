@@ -40,7 +40,7 @@
 
         case "ai":
             setClocks(baseSeconds);
-            loadScript("./code/ai.js");
+            loadScript("./code/ai/run-ran1.js");
             break;
 
         case "online":
