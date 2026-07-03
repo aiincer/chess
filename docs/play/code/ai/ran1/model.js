@@ -1,4 +1,4 @@
-// ./code/ai/ran1.js
+// ./code/ai/ran1/run.js
 
 function isWhite(p){
     return p && p === p.toUpperCase();

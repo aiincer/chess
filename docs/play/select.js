@@ -36,7 +36,7 @@
             switch (data.model) {
                 case "ran1":
                     setClocks(baseSeconds);
-                    loadScript("./code/ai/run-ran1.js");
+                    loadScript("./code/ai/ran1/run.js");
                     break;
             }
             break;
