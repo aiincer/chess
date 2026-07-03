@@ -164,8 +164,8 @@ async function updateMenu() {
         extraLabel.textContent = "Modell";
 
         extraSelect.innerHTML = `
-            <option value="standard">ran1</option>
-            <option value="standard">lok1</option>
+            <option value="ran1">ran1</option>
+            <option value="lok1">lok1</option>
         `;
 
         rated.innerHTML = `
@@ -248,13 +248,12 @@ startBtn.onclick = () => {
 
         case "KI":
             gameDetails.mode = "ai";
-            gameDetails.model = extraSelect.value;
-
+            const selectedModel = extraSelect.value;
+            gameDetails.model = selectedModel;
             sessionStorage.setItem(
                 "gameDetails",
                 JSON.stringify(gameDetails)
             );
-
             location.href = "../";
             return;
 

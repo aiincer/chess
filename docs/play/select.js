@@ -1,21 +1,15 @@
 (() => {
-
     const dataRaw = sessionStorage.getItem("gameDetails");
-
     if (!dataRaw) {
         console.warn("Keine gameDetails gefunden");
         return;
     }
-    
     const data = JSON.parse(dataRaw);
     console.log(data)
     // ZEIT PARSEN ("10:10")
     let timeStr = data.time || "10:10";
-
     const parts = timeStr.split(":").map(Number);
-
     let baseSeconds = 600; // fallback 10 min
-
     if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         const minutes = parts[0];
         const increment = parts[1]; // aktuell nicht genutzt, aber vorhanden
@@ -39,8 +33,12 @@
             break;
 
         case "ai":
-            setClocks(baseSeconds);
-            loadScript("./code/ai.js");
+            switch (data.model) {
+                case "ran1":
+                    setClocks(baseSeconds);
+                    loadScript("./code/ai/run-ran1.js");
+                    break;
+            }
             break;
 
         case "online":
@@ -55,7 +53,6 @@
             break;
     }
 
-    
     // CLOCK SETZEN
     function setClocks(seconds) {
         window.clocks = {

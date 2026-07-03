@@ -1,4 +1,4 @@
-import { getRandomMove } from "./ai/ran1.js";
+import { getRandomMove } from "./models/ran1.js";
 
 const gameDetails = JSON.parse(sessionStorage.getItem("gameDetails") || "{}");
 const playerColor = gameDetails.color === 1 ? "white" : "black";
