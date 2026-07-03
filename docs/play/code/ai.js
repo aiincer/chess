@@ -192,3 +192,19 @@ function showPromotionWindow(color, onChoose){
 }
 
 initLocalControls();
+
+window.addEventListener("load", () => {
+    if(gameDetails.mode === "ai" && aiColor === "white"){
+        setTimeout(() => {
+            const move = getRandomMove(boardMatrix, "white");
+            if(!move) return;
+            executeLocalMove(
+                {x: move.from[0], y: move.from[1]},
+                {x: move.to[0], y: move.to[1]}
+            );
+            resetColors();
+            drawBoard();
+            initLocalControls();
+        }, 500);
+    }
+});
