@@ -152,7 +152,9 @@ async function updateMenu() {
     rated.disabled = false;
 
     for (const option of opponent.options) {
-        option.disabled = option.value !== "Lokal";
+        option.disabled =
+            option.value !== "Lokal" &&
+            option.value !== "KI";
     }
 
     // KI
