@@ -65,6 +65,9 @@ export function loadBar(level) {
       </a>
 
       <div class="nav-right">
+        <button class="btn" onclick="location.href='${level}/profile/skins'">
+          Skins
+        </button>
         <button class="btn" onclick="location.href='${level}/profile/friends'">
           Freunde
         </button>

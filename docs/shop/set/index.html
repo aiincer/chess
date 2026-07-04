@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Set</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="topbar"></div>
+
+<div class="container">
+
+  <h1 id="setName">Lädt...</h1>
+
+  <img id="setImage" class="set-image" alt="Set Bild">
+
+  <div id="tagContainer" class="tag-container"></div>
+
+  <div id="collectionContainer" class="collection"></div>
+
+  <p id="description" class="description"></p>
+
+</div>
+
+<script type="module">
+import { loadBar } from "../../api/bar.js";
+document.getElementById("topbar").innerHTML = loadBar("../..");
+
+const params = new URLSearchParams(window.location.search);
+const setId = params.get("set");
+
+const nameEl = document.getElementById("setName");
+const imgEl = document.getElementById("setImage");
+const tagContainer = document.getElementById("tagContainer");
+const collectionContainer = document.getElementById("collectionContainer");
+const descEl = document.getElementById("description");
+
+async function loadSet() {
+
+    if (!setId) {
+        nameEl.textContent = "Kein Set angegeben";
+        return;
+    }
+
+    const res = await fetch("../../api/sets.json");
+    const sets = await res.json();
+
+    const set = sets[setId];
+
+    if (!set) {
+        nameEl.textContent = "Set nicht gefunden";
+        return;
+    }
+
+    // NAME
+    nameEl.textContent = set.name || setId;
+
+    // BILD
+    imgEl.src = `../../src/img/sets/${setId}/icon.png`;
+
+    imgEl.onerror = () => {
+        imgEl.src = "../../src/img/sets/default/icon.png";
+    };
+
+    // TAGS
+    tagContainer.innerHTML = "";
+
+    if (Array.isArray(set.tag)) {
+        set.tag.forEach(tagData => {
+
+            const [tagName, colors] = tagData;
+
+            const tag = document.createElement("span");
+            tag.className = "tag";
+            tag.textContent = tagName;
+
+            const outline = colors?.[0] || "#888";
+            const fill = colors?.[1] || "transparent";
+            const text = colors?.[2] || "#fff";
+
+            tag.style.border = `1px solid ${outline}`;
+            tag.style.background = fill;
+            tag.style.color = text;
+
+            tagContainer.appendChild(tag);
+        });
+    }
+
+    // COLLECTION
+    collectionContainer.innerHTML = "";
+
+    if (set.kollektion) {
+
+        const col = document.createElement("a");
+        col.className = "collection-box";
+        col.href = `../kollektion?kollektion=${set.kollektion}`;
+
+        col.textContent = "Kollektion: " + set.kollektion;
+
+        collectionContainer.appendChild(col);
+    }
+
+    // DESCRIPTION
+    descEl.textContent = set.beschreibung || "Keine Beschreibung vorhanden.";
+
+}
+
+loadSet();
+</script>
+
+</body>
+</html>

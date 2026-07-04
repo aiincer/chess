@@ -169,10 +169,9 @@ function renderSets(data) {
         card.append(img, content);
 
         // auswählen
-        /*card.addEventListener("click", () => {
-            sessionStorage.setItem("skin", JSON.stringify({ set: id }));
-            location.reload();
-        });*/
+        card.addEventListener("click", () => {
+            window.location.href = `../../../shop/set/?set=${id}`;
+        });
 
         grid.appendChild(card);
     });

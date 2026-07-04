@@ -1,13 +1,15 @@
 {
     "standard": {
-        "link": "../set?set=standard",
         "tag": [
             ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
-        ]
+        ],
+        "kollektion": "basic",
+        "beschreibung": "Standardmäßig für jeden gewählt."
     }, "standard-braun": {
-        "link": "../set?set=standard-braun",
         "tag": [
             ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
-        ]
+        ],
+        "kollektion": "basic",
+        "beschreibung": "Handgezeichnetes braunes Set."
     }
 }
