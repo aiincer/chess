@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sets</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div id="topbar"></div>
+<div class="container">
+
+  <header>
+    <h1>Sets</h1>
+  </header>
+
+  <div class="game-grid" id="setGrid"></div>
+
+</div>
+
+<script type="module">
+import { loadBar } from "../../../api/bar.js";
+document.getElementById("topbar").innerHTML = loadBar("../../..");
+const grid = document.getElementById("setGrid");
+
+// JSON Cache
+let setMeta = {};
+
+// IP + API Flow
+async function loadSets() {
+    try {
+
+        // 1. IP holen
+        const ipRes = await fetch("../../../api/ip.txt");
+        const ip = (await ipRes.text()).trim();
+
+        // 2. Code aus Session
+        const code = sessionStorage.getItem("session-id");
+
+        if (!code) {
+            console.warn("Kein Code im SessionStorage");
+            return;
+        }
+
+        // 3. erlaubte Sets holen
+        const res = await fetch(`${ip}/skins/sets?code=${code}`);
+        const data = await res.json();
+
+        const allowedSets = data.sets || [];
+
+        // 4. Meta JSON laden
+        const metaRes = await fetch("../../../api/sets.json");
+        setMeta = await metaRes.json();
+
+        // 5. rendern
+        renderSets(data);
+
+    } catch (err) {
+        console.error("Fehler beim Laden:", err);
+    }
+}
+
+// Render nur erlaubte Sets
+function renderSets(data) {
+    const allowedSets = data.sets || [];
+    grid.innerHTML = "";
+    allowedSets.forEach((id) => {
+
+        const meta = setMeta[id] || {};
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        if (id === data.set) {
+            card.classList.add("selected");
+        }
+
+        // Bild
+        const img = document.createElement("img");
+        img.src = `../../../src/img/sets/${id}/icon.png`;
+
+        // Content (nur Teil aus JSON!)
+        const content = document.createElement("div");
+        content.className = "card-content";
+
+        const title = document.createElement("h3");
+        title.textContent = meta.name || id;
+
+        // optional: NICHT alles aus JSON rendern
+        const desc = document.createElement("p");
+        if (meta.desc) {
+            desc.textContent = meta.desc;
+        } else {
+            desc.textContent = "Figuren-Set";
+        }
+        const tagContainer = document.createElement("div");
+        tagContainer.className = "tag-container";
+
+        if (Array.isArray(meta.tag)) {
+            meta.tag.forEach(tagData => {
+
+                const [tagName, colors] = tagData;
+
+                const tag = document.createElement("span");
+                tag.className = "tag";
+                tag.textContent = tagName;
+
+                const outline = colors?.[0] || "white";
+                const fill = colors?.[1] || "transparent";
+                const text = colors?.[2] || "white";
+
+                tag.style.border = `1px solid ${outline}`;
+                tag.style.background = fill;
+                tag.style.color = text;
+
+                tagContainer.appendChild(tag);
+            });
+        }
+        const button = document.createElement("button");
+        button.className = "selectButton";
+
+        if (id === data.set) {
+            button.textContent = "Gewählt";
+            button.classList.add("selected");
+        } else {
+            button.textContent = "Wählen";
+        }
+
+        button.addEventListener("click", async (e) => {
+            e.stopPropagation();
+
+            try {
+
+                const ipRes = await fetch("../../../api/ip.txt");
+                const ip = (await ipRes.text()).trim();
+
+                const code = sessionStorage.getItem("session-id");
+
+                const response = await fetch(`${ip}/skins/set`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        set: id
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Serverfehler");
+                }
+
+                // Skin im SessionStorage aktualisieren
+                sessionStorage.setItem("skin", JSON.stringify({
+                    set: id
+                }));
+                data.set = id;
+                renderSets(data);
+
+            } catch (err) {
+                console.error("Set konnte nicht gespeichert werden:", err);
+            }
+        });
+
+        content.append(title, tagContainer, desc, button);
+        card.append(img, content);
+
+        // auswählen
+        /*card.addEventListener("click", () => {
+            sessionStorage.setItem("skin", JSON.stringify({ set: id }));
+            location.reload();
+        });*/
+
+        grid.appendChild(card);
+    });
+}
+
+loadSets();
+</script>
+
+</body>
+</html>

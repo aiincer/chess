@@ -1,0 +1,8 @@
+{
+    "standard": {
+        "link": "../set?set=standard",
+        "tag": [
+            ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
+        ]
+    }
+}

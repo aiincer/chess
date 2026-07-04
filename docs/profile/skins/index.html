@@ -22,23 +22,20 @@
                     <!-- Das Brett kommt später hier hinein -->
                 </div>
             </div>
-
-            <div class="card">
-
-                <h2>Set</h2>
-
-                <img id="setIcon" alt="Figuren-Set">
-
-                <h3 id="setName">Lädt...</h3>
-
-            </div>
+            <a  href="./sets">
+                <div class="card">
+                    <h2>Set</h2>
+                    <img id="setIcon" alt="Figuren-Set" >
+                    <h3 id="setName">Lädt...</h3>
+                </div>
+            </a>
 
         </div>
 
     </div>
 
     <script type="module">
-                import { loadBar } from "../../api/bar.js";
+        import { loadBar } from "../../api/bar.js";
 
         document.getElementById("topbar").innerHTML = loadBar("../..");
 
