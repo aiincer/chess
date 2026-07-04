@@ -4,5 +4,10 @@
         "tag": [
             ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
         ]
+    }, "standard-braun": {
+        "link": "../set?set=standard-braun",
+        "tag": [
+            ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
+        ]
     }
 }
