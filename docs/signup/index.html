@@ -83,6 +83,7 @@
 
         // 4. Session speichern
         sessionStorage.setItem("session-id", data.session);
+        sessionStorage.setItem("skin", JSON.stringify(data.skin));
 
         msg.textContent = "Erstellt & eingeloggt!";
 

@@ -62,9 +62,9 @@
         });
 
         const data = await res.json();
-
         if (data.ok) {
           sessionStorage.setItem("session-id", data.session);
+          sessionStorage.setItem("skin", JSON.stringify(data.skin));
           msg.textContent = "Login erfolgreich!";
 
           // optional redirect

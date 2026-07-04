@@ -195,7 +195,6 @@ function startClock(){
     clearInterval(clockInterval);
 
     clockInterval = setInterval(() => {
-        console.log("cu")
         if (winner) return;
         
         if (activePlayer === "white") {
