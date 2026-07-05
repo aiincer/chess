@@ -11,5 +11,11 @@
         ],
         "kollektion": "basic",
         "beschreibung": "Handgezeichnetes braunes Set."
+    }, "woodgrain": {
+        "tag": [
+            ["pro", ["#c7a600", "#ffd500", "#000000"]]
+        ],
+        "kollektion": "pro",
+        "beschreibung": "Edeles Holzset."
     }
 }
