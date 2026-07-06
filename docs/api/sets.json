@@ -5,13 +5,15 @@
         ],
         "kollektion": "basic",
         "beschreibung": "Standardmäßig für jeden gewählt."
-    }, "standard-braun": {
+    }, 
+    "standard-braun": {
         "tag": [
             ["starter", ["#0f6cf1", "#a7c8ff", "#000000"]]
         ],
         "kollektion": "basic",
         "beschreibung": "Handgezeichnetes braunes Set."
-    }, "woodgrain": {
+    }, 
+    "woodgrain": {
         "tag": [
             ["pro", ["#c7a600", "#ffd500", "#000000"]]
         ],

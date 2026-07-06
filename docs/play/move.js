@@ -196,19 +196,25 @@ function updateMoveList(){
     if(!movesEl) return;
 
     movesEl.innerHTML = "";
-
-    for(let i=0;i<moveHistory.length;i+=2){
-        const numberEl = document.createElement("div");
-        numberEl.className = "moveNumber";
-        numberEl.textContent = `${Math.floor(i / 2) + 1}.`;
-
+    if (!isBlindPlus) {
+        for(let i=0;i<moveHistory.length;i+=2){
+            const numberEl = document.createElement("div");
+            numberEl.className = "moveNumber";
+            numberEl.textContent = `${Math.floor(i / 2) + 1}.`;
+            const moveEl = document.createElement("div");
+            moveEl.className = "move";
+            const whiteMove = moveNotation(moveHistory[i]);
+            const blackMove = moveHistory[i + 1] ? moveNotation(moveHistory[i + 1]) : "";
+            moveEl.textContent = `${whiteMove}${blackMove ? "  " + blackMove : ""}`;
+            movesEl.appendChild(numberEl);
+            movesEl.appendChild(moveEl);
+        }
+    } else {
+        if (moveHistory.length === 0) return;
+        const lastMove = moveHistory[moveHistory.length - 1];
         const moveEl = document.createElement("div");
         moveEl.className = "move";
-        const whiteMove = moveNotation(moveHistory[i]);
-        const blackMove = moveHistory[i + 1] ? moveNotation(moveHistory[i + 1]) : "";
-        moveEl.textContent = `${whiteMove}${blackMove ? "  " + blackMove : ""}`;
-
-        movesEl.appendChild(numberEl);
+        moveEl.textContent = moveNotation(lastMove);
         movesEl.appendChild(moveEl);
     }
 

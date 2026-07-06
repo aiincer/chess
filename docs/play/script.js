@@ -2,6 +2,13 @@ const skinData = JSON.parse(
     sessionStorage.getItem("skin") ||
     '{"set":"standard","color":{}}'
 );
+const gameMode = JSON.parse(
+        sessionStorage.getItem("gameDetails") || 
+        '{"color":0,"time":"60:60","gameMode":"standard","mode":"lokal","vs":""}'
+    ).gameMode;
+const isBlind = gameMode === "blind";
+const isBlindPlus = gameMode === "blind+";
+const isStandard = gameMode === "standard";
 const pieceSet = skinData.set || "standard";
 const boardColors = skinData.color || {};
 const style = {
@@ -50,18 +57,18 @@ const boardMatrix = [
 
 
 // 🎨 Farben
-const colorMatrix = [];
-
 function initColors(){
+    let runnerMatrix = [];
     for(let y=0;y<8;y++){
-        colorMatrix[y] = [];
+        runnerMatrix[y] = [];
         for(let x=0;x<8;x++){
-            colorMatrix[y][x] = (x+y)%2===0 ? "L" : "l";
+            runnerMatrix[y][x] = (x+y)%2===0 ? "L" : "l";
         }
     }
+    return runnerMatrix;
 }
-
-initColors();
+const colorMatrix = initColors();
+const baseColorMatrix = initColors();
 
 
 const board = document.getElementById("board");
@@ -83,17 +90,32 @@ function drawBoard(){
 
             const square = document.createElement("div");
             square.className = "square";
-
-            square.style.background = style.board[colorMatrix[y][x]];
+            if (isStandard) {
+                square.style.background = style.board[colorMatrix[y][x]];
+            } else {
+                square.style.background = style.board[baseColorMatrix[y][x]];
+            }
 
             const piece = boardMatrix[y][x];
-
-            if(piece){
+            if (piece && isStandard) {
                 const img = document.createElement("img");
                 img.src = style.pieces[piece];
                 square.appendChild(img);
             }
-
+            // Zahlen links
+            if (x === 0) {
+                const rank = document.createElement("span");
+                rank.className = "rankLabel";
+                rank.textContent = 8 - y;
+                square.appendChild(rank);
+            }
+            // Buchstaben unten
+            if (y === 7) {
+                const file = document.createElement("span");
+                file.className = "fileLabel";
+                file.textContent = "ABCDEFGH"[x];
+                square.appendChild(file);
+            }
             // 🖱️ CLICK
             square.onclick = () => handleClick(x, y);
 
