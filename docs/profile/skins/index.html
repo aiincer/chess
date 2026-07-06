@@ -17,10 +17,11 @@
 
             <div class="card">
                 <h2>Brett</h2>
-
-                <div id="boardPreview">
-                    <!-- Das Brett kommt später hier hinein -->
-                </div>
+                <a  href="./color">
+                    <div id="boardPreview">
+                        <!-- Brett -->
+                    </div>
+                </a>
             </div>
             <a  href="./sets">
                 <div class="card">
@@ -78,6 +79,95 @@
         loadSkin();
 
     </script>
+<script>
+function renderBoardPreview() {
 
+    const skin = JSON.parse(
+        sessionStorage.getItem("skin") ||
+        '{"set":"standard","color":{}}'
+    );
+
+    const setId = skin.set || "standard";
+
+    const colors = Object.assign({
+        l: "#b58863",
+        L: "#f0d9b5",
+        m: "#2e7d32",
+        M: "#66bb6a",
+        t: "#b71c1c",
+        T: "#ef5350"
+    }, skin.color || {});
+
+    const board = document.getElementById("boardPreview");
+    board.innerHTML = "";
+
+    board.style.display = "grid";
+    board.style.gridTemplateColumns = "repeat(4, 70px)";
+    board.style.gridTemplateRows = "repeat(4, 70px)";
+    board.style.gap = "0";
+
+    // Legende:
+    // . = normales Feld
+    // m = Zugfeld
+    // x = Schlagfeld + schwarzer Bauer
+    // D = weiße Dame
+    const layout = [
+        "mmmD",
+        "..mm",
+        ".m.m",
+        "x..x"
+    ];
+
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+
+            const square = document.createElement("div");
+
+            square.style.width = "70px";
+            square.style.height = "70px";
+            square.style.display = "flex";
+            square.style.alignItems = "center";
+            square.style.justifyContent = "center";
+
+            // Kariertes Brett
+            const dark = (x + y) % 2 === 1;
+
+            let background = dark ? colors.l : colors.L;
+
+            const cell = layout[y][x];
+
+            if (cell === "m") {
+                background = dark ? colors.m : colors.M;
+            }
+
+            if (cell === "x") {
+                background = dark ? colors.t : colors.T;
+            }
+
+            square.style.background = background;
+
+            if (cell === "D") {
+                const img = document.createElement("img");
+                img.src = `../../src/img/sets/${setId}/white/d.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+
+            if (cell === "x") {
+                const img = document.createElement("img");
+                img.src = `../../src/img/sets/${setId}/black/b.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+
+            board.appendChild(square);
+        }
+    }
+}
+
+renderBoardPreview();
+</script>
 </body>
 </html>

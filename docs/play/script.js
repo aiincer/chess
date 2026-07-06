@@ -1,14 +1,18 @@
-const skinData = JSON.parse(sessionStorage.getItem("skin") || '{"set":"standard"}');
+const skinData = JSON.parse(
+    sessionStorage.getItem("skin") ||
+    '{"set":"standard","color":{}}'
+);
 const pieceSet = skinData.set || "standard";
+const boardColors = skinData.color || {};
 const style = {
 
     board: {
-        l: "#b58863",
-        L: "#f0d9b5",
-        m: "#2e7d32",
-        M: "#66bb6a",
-        t: "#b71c1c",
-        T: "#ef5350"
+        l: boardColors.l || "#b58863",
+        L: boardColors.L || "#f0d9b5",
+        m: boardColors.m || "#2e7d32",
+        M: boardColors.M || "#66bb6a",
+        t: boardColors.t || "#b71c1c",
+        T: boardColors.T || "#ef5350"
     },
 
   pieces: {

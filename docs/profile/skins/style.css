@@ -22,11 +22,10 @@ body{
     border:1px solid #2a2f3a;
     border-radius:12px;
     padding:14px;
-
-    height:260px; /* deutlich kleiner */
     display:flex;
     flex-direction:column;
-    gap:10px;
+    align-items:center;
+    gap:12px;
 }
 
 .card h2{
@@ -35,16 +34,19 @@ body{
 }
 
 #boardPreview{
-    flex:1;
-    background:#242933;
+    display:grid;
+    grid-template-columns:repeat(4,70px);
+    grid-template-rows:repeat(4,70px);
+    width:280px;
+    height:280px;
     border:1px solid #343b49;
     border-radius:10px;
-    min-height:0;
+    overflow:hidden;
 }
 
 #setIcon{
-    width:100%;
-    max-height:180px;
+    width:280px;
+    height:280px;
     object-fit:contain;
     border-radius:10px;
     background:#242933;
@@ -58,13 +60,15 @@ body{
 }
 
 @media (max-width:900px){
-
     .content{
         grid-template-columns:1fr;
     }
-
-    #boardPreview{
-        height:450px;
+    #boardPreview,
+    #setIcon{
+        width:100%;
+        max-width:280px;
+        height:auto;
+        aspect-ratio:1;
     }
 
 }

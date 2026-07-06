@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farben</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="../../../src/img/logo.png">
+</head>
+
+<body>
+
+<div id="topbar"></div>
+
+<div class="container">
+
+    <header>
+        <h1>Farben</h1>
+    </header>
+
+    <div class="game-grid" id="colorGrid"></div>
+
+</div>
+
+<script type="module">
+import { loadBar } from "../../../api/bar.js";
+
+document.getElementById("topbar").innerHTML = loadBar("../../..");
+
+const grid = document.getElementById("colorGrid");
+
+let colors = {};
+
+async function loadColors() {
+    const res = await fetch("../../../api/colors.json");
+    colors = await res.json();
+    renderColors();
+}
+
+function sameColor(a, b) {
+    if (!a || !b) return false;
+
+    return (
+        a.l === b.l &&
+        a.L === b.L &&
+        a.m === b.m &&
+        a.M === b.M &&
+        a.t === b.t &&
+        a.T === b.T
+    );
+}
+
+// 4x4 Preview Board
+function createPreview(color) {
+
+    const board = document.createElement("div");
+
+    board.style.display = "grid";
+    board.style.gridTemplateColumns = "repeat(4, 1fr)";
+    board.style.aspectRatio = "1";
+    board.style.width = "100%";
+    board.style.borderRadius = "10px";
+    board.style.overflow = "hidden";
+
+    const layout = [
+        "mmmD",
+        "..mm",
+        ".m.m",
+        "x..x"
+    ];
+
+    const skin = JSON.parse(sessionStorage.getItem("skin") || '{"set":"standard"}');
+    const setId = skin.set || "standard";
+
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+
+            const square = document.createElement("div");
+            square.style.display = "flex";
+            square.style.alignItems = "center";
+            square.style.justifyContent = "center";
+
+            const dark = (x + y) % 2 === 1;
+
+            let bg = dark ? color.l : color.L;
+
+            const cell = layout[y][x];
+
+            if (cell === "m") {
+                bg = dark ? color.m : color.M;
+            }
+
+            if (cell === "x") {
+                bg = dark ? color.t : color.T;
+            }
+
+            square.style.background = bg;
+
+            if (cell === "D") {
+                const img = document.createElement("img");
+                img.src = `../../../src/img/sets/${setId}/white/d.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+
+            if (cell === "x") {
+                const img = document.createElement("img");
+                img.src = `../../../src/img/sets/${setId}/black/b.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+
+            board.appendChild(square);
+        }
+    }
+
+    return board;
+}
+
+function renderColors() {
+
+    grid.innerHTML = "";
+
+    const skin = JSON.parse(sessionStorage.getItem("skin") || '{"color":{}}');
+    const current = skin.color || {};
+
+    Object.entries(colors).forEach(([name, color]) => {
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        if (sameColor(current, color)) {
+            card.classList.add("selected");
+        }
+
+        const preview = createPreview(color);
+
+        const content = document.createElement("div");
+        content.className = "card-content";
+
+        const title = document.createElement("h3");
+        title.textContent = name;
+
+        const desc = document.createElement("p");
+        desc.textContent = "Brettfarben";
+
+        const button = document.createElement("button");
+        button.className = "selectButton";
+
+        if (sameColor(current, color)) {
+            button.textContent = "Gewählt";
+            button.classList.add("selected");
+        } else {
+            button.textContent = "Wählen";
+        }
+
+        button.onclick = async (e) => {
+            e.stopPropagation();
+
+            const ipRes = await fetch("../../../api/ip.txt");
+            const ip = (await ipRes.text()).trim();
+
+            const code = sessionStorage.getItem("session-id");
+
+            await fetch(`${ip}/skins/color`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code,
+                    color
+                })
+            });
+
+            skin.color = color;
+            sessionStorage.setItem("skin", JSON.stringify(skin));
+
+            renderColors();
+        };
+
+        content.append(title, desc, button);
+        card.append(preview, content);
+
+        grid.appendChild(card);
+    });
+}
+
+loadColors();
+</script>
+
+</body>
+</html>
