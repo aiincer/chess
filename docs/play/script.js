@@ -67,8 +67,8 @@ function initColors(){
     }
     return runnerMatrix;
 }
-const colorMatrix = initColors();
-const baseColorMatrix = initColors();
+let colorMatrix = initColors();
+let baseColorMatrix = initColors();
 
 
 const board = document.getElementById("board");
@@ -158,7 +158,7 @@ function handleClick(x, y){
 
 // 🔄 Reset Colors
 function resetColors(){
-    initColors();
+    colorMatrix = initColors();
 }
 const hasMoved = [];
 
