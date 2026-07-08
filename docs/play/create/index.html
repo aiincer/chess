@@ -100,7 +100,7 @@ const skillMap = {
     }
 };
 
-document.getElementById("topbar").innerHTML = loadBar("..");
+document.getElementById("topbar").innerHTML = loadBar("../..");
 const session = sessionStorage.getItem("session-id");
 if (!session) {
     location.href = "../../login";
@@ -178,7 +178,8 @@ async function updateMenu() {
     for (const option of opponent.options) {
         option.disabled =
             option.value !== "Lokal" &&
-            option.value !== "KI";
+            option.value !== "KI" &&
+            option.value !== "Link";
     }
 
     // KI
@@ -290,27 +291,32 @@ startBtn.onclick = () => {
         case "Lokal":
             gameDetails.mode = "lokal";
             gameDetails.vs = "";
-
             sessionStorage.setItem(
                 "gameDetails",
                 JSON.stringify(gameDetails)
             );
-
             location.href = "../";
             return;
 
-        case "Freund":
+        /*case "Freund":
         case "Öffentlich":
-        case "Link":
             gameDetails.mode = "online";
             gameDetails.vs = "";
-
             sessionStorage.setItem(
                 "gameDetails",
                 JSON.stringify(gameDetails)
             );
+            location.href = "../make";
+            return;*/
 
-            location.href = "./wait";
+        case "Link":
+            gameDetails.mode = "online";
+            gameDetails.vs = "";
+            sessionStorage.setItem(
+                "gameDetails",
+                JSON.stringify(gameDetails)
+            );
+            location.href = "../make/?method=link";
             return;
     }
 };
