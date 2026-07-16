@@ -39,9 +39,11 @@ async function joinRoom() {
 	}
 	console.log("Erfolgreich beigetreten:", data[0].roomCode);
     sessionStorage.setItem("roomCode", roomCode);
+	let gameDetails = JSON.parse(data[0].config);
+	gameDetails.color = gameDetails.color === 1 ? 0 : 1;
 	sessionStorage.setItem(
 		"gameDetails",
-		data[0].config
+		JSON.stringify(gameDetails)
 	);
     setStatus("green");
     window.location.href = "../../";
