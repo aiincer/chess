@@ -1,12 +1,3 @@
-const gameMode = JSON.parse(
-        sessionStorage.getItem("gameDetails") || 
-        '{"color":0,"time":"60:60","gameMode":"standard","mode":"lokal","vs":""}'
-    ).gameMode;
-const isBlind = gameMode === "blind";
-const isBlindPlus = gameMode === "blind+";
-const isStandard = gameMode === "standard";
-
-
 // ♟️ Figuren
 const boardMatrix = [
 ["t","s","l","d","k","l","s","t"],
