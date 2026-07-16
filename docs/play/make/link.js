@@ -56,7 +56,8 @@ async function createRoom() {
 		.insert([
 			{
 				code: code,
-				opponent: false
+				opponent: false,
+		        config: sessionStorage.getItem("gameDetails")
 			}
 		])
 		.select();

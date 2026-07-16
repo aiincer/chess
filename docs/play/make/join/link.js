@@ -37,8 +37,12 @@ async function joinRoom() {
 		console.error("Raum nicht gefunden");
 		return;
 	}
-	console.log("Erfolgreich beigetreten:", data[0].code);
-    sessionStorage.setItem("roomCode", code);
+	console.log("Erfolgreich beigetreten:", data[0].roomCode);
+    sessionStorage.setItem("roomCode", roomCode);
+	sessionStorage.setItem(
+		"gameDetails",
+		data[0].config
+	);
     setStatus("green");
     window.location.href = "../../";
 }
