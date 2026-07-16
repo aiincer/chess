@@ -37,6 +37,10 @@ function waitForOpponent(roomCode) {
 					console.log("Gegner beigetreten!");
 					setStatus("darkgreen");
                     sessionStorage.setItem("roomCode", roomCode);
+					sessionStorage.setItem(
+						"opponent-set",
+						payload.new.setjoin
+					);
                     await client
 	                    .from("rooms")
 	                    .delete()
@@ -51,13 +55,16 @@ function waitForOpponent(roomCode) {
 
 async function createRoom() {
 	const code = createCode();
+	const skin = JSON.parse(sessionStorage.getItem("skin"));
+	const hostSet = skin.set;
 	const { data, error } = await client
 		.from("rooms")
 		.insert([
 			{
 				code: code,
 				opponent: false,
-		        config: sessionStorage.getItem("gameDetails")
+		        config: sessionStorage.getItem("gameDetails"),
+				sethost: hostSet
 			}
 		])
 		.select();
