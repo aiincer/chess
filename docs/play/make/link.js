@@ -55,6 +55,7 @@ async function createRoom() {
 		.select();
 	if (error) {
 		console.error("Fehler beim Erstellen:", error);
+        setStatus("red");
 		return {
 			ok: false
 		};
