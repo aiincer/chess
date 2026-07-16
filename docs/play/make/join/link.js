@@ -38,7 +38,9 @@ async function joinRoom() {
 		return;
 	}
 	console.log("Erfolgreich beigetreten:", data[0].code);
+    sessionStorage.setItem("roomCode", code);
     setStatus("green");
+    window.location.href = "../../";
 }
 
 joinRoom();

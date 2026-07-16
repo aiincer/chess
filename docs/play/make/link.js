@@ -32,10 +32,17 @@ function waitForOpponent(roomCode) {
 				table: "rooms",
 				filter: `code=eq.${roomCode}`
 			},
-			(payload) => {
+			async (payload) => {
 				if (payload.new.opponent === true) {
 					console.log("Gegner beigetreten!");
-					setStatus("green");
+					setStatus("darkgreen");
+                    sessionStorage.setItem("roomCode", roomCode);
+                    await client
+	                    .from("rooms")
+	                    .delete()
+	                    .eq("code", roomCode);
+                    setStatus("green");
+                    window.location.href = "../";
 				}
 			}
 		)
