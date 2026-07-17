@@ -10,13 +10,11 @@ body{
     color:#fff;
 }
 
-/* Abstand unter der Top-Bar */
 #topbar{
     width:100%;
 }
 
 /* Hauptlayout */
-
 #game{
     width:100%;
     min-height:calc(100vh - 70px);
@@ -30,10 +28,7 @@ body{
     padding:40px;
 }
 
-/* ==========================
-   Schachbrett
-   ========================== */
-
+/* Schachbrett */
 #board{
     display:grid;
 
@@ -62,10 +57,7 @@ body{
     pointer-events:none;
 }
 
-/* ==========================
-   Rechte Seite
-   ========================== */
-
+/* Rechte Seite */
 #sidebar{
     width:300px;
 }
@@ -85,7 +77,6 @@ body{
 }
 
 /* Zeiten */
-
 #topInfo{
     display:flex;
     justify-content:space-between;
@@ -202,10 +193,7 @@ body{
     color:#d0d0d0;
 }
 
-/* ==========================
-   Zugliste
-   ========================== */
-
+/* Zugliste */
 #moves{
     height:430px;
 
@@ -240,7 +228,6 @@ body{
 }
 
 /* Scrollbar */
-
 #moves::-webkit-scrollbar{
     width:8px;
 }
@@ -259,7 +246,6 @@ body{
 }
 
 /* Responsive */
-
 @media (max-width:1100px){
 
     #game{
@@ -311,4 +297,15 @@ body{
     font-weight: bold;
     opacity: .8;
     pointer-events: none;
+}
+
+/* rotation */
+.boardRotated{
+    transform: rotate(180deg);
+}
+
+.boardRotated img,
+.boardRotated .rankLabel,
+.boardRotated .fileLabel{
+    transform: rotate(180deg);
 }

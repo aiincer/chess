@@ -54,3 +54,16 @@ const style = {
         K: `../src/img/sets/${whiteSet}/white/k.png`
     }
 };
+//render-settings
+let boardRotated;
+if (playingColor === 1) {
+    boardRotated = true;
+} else {
+    boardRotated = false;
+}
+const boardObject = document.getElementById("board");
+if (boardRotated) {
+    boardObject.classList.add("boardRotated");
+} else {
+    boardObject.classList.remove("boardRotated");
+}
