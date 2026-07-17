@@ -32,12 +32,31 @@
             border-radius: 50%;
             background: orange;
         }
+        #invite {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        #inviteLink {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #invite button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     
     <div id="status">
         <div class="loader"></div>
+    </div>
+    <div id="invite">
+        <input id="inviteLink" readonly>
+        <button onclick="copyInvite()">Kopieren</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -48,6 +67,12 @@
             const script = document.createElement("script");
             script.src = "./link.js";
             document.body.appendChild(script);
+        }
+    </script>
+    <script>
+        function copyInvite() {
+            const input = document.getElementById("inviteLink");
+            navigator.clipboard.writeText(input.value);
         }
     </script>
 </body>
