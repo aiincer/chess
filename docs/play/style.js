@@ -56,7 +56,7 @@ const style = {
 };
 //render-settings
 let boardRotated;
-if (playingColor === 1) {
+if (playingColor === 0) {
     boardRotated = true;
 } else {
     boardRotated = false;
