@@ -33,5 +33,12 @@
         ],
         "kollektion": "modern-art",
         "beschreibung": "Moderne Kunst, viele mögen es, manche nicht."
+    }, 
+    "buged": {
+        "tag": [
+            ["pro", ["#c7a600", "#ffd500", "#000000"]]
+        ],
+        "kollektion": "modern-art",
+        "beschreibung": "WaS iST HIer pAssIErt?"
     }
 }
