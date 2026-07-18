@@ -16,6 +16,33 @@
 } .font-nemoy {
     font-family: "Nemoy", Arial, sans-serif;
 }
+
+@font-face {
+    font-family: "Avara";
+    src: url("./src/font/Avara.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+} .font-avara {
+    font-family: "Avara", Arial, sans-serif;
+}
+
+@font-face {
+    font-family: "Melissa";
+    src: url("./src/font/Melissa.otf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+} .font-melissa {
+    font-family: "Melissa", Arial, sans-serif;
+}
+
+@font-face {
+    font-family: "ChaChicle";
+    src: url("./src/font/ChaChicle.otf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+} .font-chicle {
+    font-family: "ChaChicle", Arial, sans-serif;
+}
 /* bar */
 header {
     position: fixed;
@@ -87,6 +114,9 @@ a {
 } .hero .cta-button:hover {
     background-color: #388e3c;
 }
+.hero h2 {
+    padding: 40px;
+}
 @media(max-width: 768px){
     .hero h1 {
         font-size: 2.2rem;
@@ -143,4 +173,26 @@ footer {
     height:120px;
     object-fit:contain;
     margin-bottom:25px;
+}
+
+/* wheel */
+.design-wheel {
+    position: relative;
+    display: inline-block;
+    width: 170px;
+    height: 1.2em;
+
+    perspective: 800px;
+    transform-style: preserve-3d;
+}
+
+.design-wheel span {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    text-align: center;
+
+    transition: transform .8s, opacity .8s;
 }
