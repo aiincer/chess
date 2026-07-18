@@ -20,7 +20,7 @@ const boardColors = skinData.color || {};
 let whiteSet = pieceSet;
 let blackSet = pieceSet;
 if (playingAgainst === "online") {
-    if (playingColor === 1) {
+    if (playingColor === 0) {
         whiteSet = pieceSet;
         blackSet = opponentSet;
     } else {
@@ -56,7 +56,7 @@ const style = {
 };
 //render-settings
 let boardRotated;
-if (playingColor === 0) {
+if (playingColor === 1) {
     boardRotated = true;
 } else {
     boardRotated = false;
