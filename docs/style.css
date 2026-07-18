@@ -62,6 +62,7 @@ header {
 body {
     background-color: #e8f5e9;
     color: #333;
+    zoom: 1.5;
 } body.dark{
     background:#1b1b1b;
     color:#f0f0f0;
@@ -78,7 +79,7 @@ a {
 
 /* hero */
 .hero {
-    height: 100vh;
+    height: 75vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -141,7 +142,7 @@ footer {
 
 /* abschnitt 1 */
 .features {
-    height:100vh;
+    height:75vh;
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:30px;
@@ -168,11 +169,19 @@ footer {
 } body.dark .feature-card{
     background:#262626;
 }
+.feature-card .img-border {
+    width: 160px;
+    height: 160px;
+    background-color: #66bb6a;
+    border-radius: 100%;
+    margin-bottom:25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .feature-card img{
     width:120px;
     height:120px;
-    object-fit:contain;
-    margin-bottom:25px;
 }
 
 /* wheel */
@@ -181,7 +190,6 @@ footer {
     display: inline-block;
     width: 170px;
     height: 1.2em;
-
     perspective: 800px;
     transform-style: preserve-3d;
 }
@@ -190,9 +198,7 @@ footer {
     position: absolute;
     left: 0;
     top: 0;
-
     width: 100%;
     text-align: center;
-
     transition: transform .8s, opacity .8s;
 }
