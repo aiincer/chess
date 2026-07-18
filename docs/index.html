@@ -1,24 +1,53 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>Index</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&lt;inoffiziell&gt; Citrus Client</title>
+    <link rel="icon" type="image/png" href="./src/img/icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./src/assets/bar/style.css">
+    <script src="./src/assets/bar/script.js"></script>
 </head>
 
-<body>
+<body class="dark">
 
-  <div id="topbar"></div>
+<header id="topbar"></header>
 
-  <div style="padding:40px; text-align:center;">
-    <h1>&lt;name&gt;</h1>
-    <p>online-schach-platform</p>
-    <p>einloggen, um loszulegen</p>
-  </div>
+<section class="hero">
+    <h1>Omni Chess</h1>
+    <h2 class="font-nemoy">design focused Schach-Website</h2><br>
+    <a href="https://aiincer.github.io/chess/signup" class="cta-button">Account erstellen</a>
+</section>
 
-  <script type="module">
+<section class="features">
+    <div class="feature-card">
+        <img src="./src/img/pages/index/lokal.png" alt="lokal">
+        <h2 class="font-minecraft">lokal</h2>
+        <p>spiele auf einem gerät gegen einen anderen Spieler</p>
+    </div>
+    <div class="feature-card">
+        <img src="./src/img/pages/index/ai.png" alt="AI">
+        <h2 class="font-minecraft">AI</h2>
+        <p>fordere eines unserer KI-Modelle heraus</p>
+    </div>
+    <div class="feature-card">
+        <img src="./src/img/pages/index/online.png" alt="online">
+        <h2 class="font-minecraft">online</h2>
+        <p>übe mit Online-Spielen gegen andere Nutzer</p>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 AIincer & OmniChess
+</footer>
+<!--
+<script src="./script.js"></script>
+-->
+<script type="module">
     import { loadBar } from "./api/bar.js";
     document.getElementById("topbar").innerHTML = loadBar(".");
-  </script>
+</script>
 
 </body>
 </html>
