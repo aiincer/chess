@@ -22,7 +22,7 @@ async function joinRoom() {
 	}
 	console.log("Beitreten zu:", roomCode);
 	const skin = JSON.parse(sessionStorage.getItem("skin"));
-	const joinSet = skin?.set || "default";
+	const joinSet = skin?.set || "standard";
 	const { data, error } = await client
 		.from("rooms")
 		.update({
@@ -44,7 +44,7 @@ async function joinRoom() {
     sessionStorage.setItem("roomCode", roomCode);
 	sessionStorage.setItem(
 		"opponent-set",
-		data[0].sethost || "default"
+		data[0].sethost || "standard"
 	);
 	let gameDetails = JSON.parse(data[0].config);
 	gameDetails.color = gameDetails.color === 1 ? 0 : 1;
