@@ -1,7 +1,7 @@
 /* fonts*/
 @font-face {
     font-family: "Minecraft";
-    src: url("./src/font/minecraft.ttf") format("truetype");
+    src: url("../../src/font/minecraft.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 } .font-minecraft {
@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: "Nemoy";
-    src: url("./src/font/NemoyMedium.otf") format("truetype");
+    src: url("../../src/font/NemoyMedium.otf") format("truetype");
     font-weight: normal;
     font-style: normal;
 } .font-nemoy {
@@ -19,7 +19,7 @@
 
 @font-face {
     font-family: "Avara";
-    src: url("./src/font/Avara.ttf") format("truetype");
+    src: url("../../src/font/Avara.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 } .font-avara {
@@ -28,7 +28,7 @@
 
 @font-face {
     font-family: "Melissa";
-    src: url("./src/font/Melissa.otf") format("truetype");
+    src: url("../../src/font/Melissa.otf") format("truetype");
     font-weight: normal;
     font-style: normal;
 } .font-melissa {
@@ -37,7 +37,7 @@
 
 @font-face {
     font-family: "ChaChicle";
-    src: url("./src/font/ChaChicle.otf") format("truetype");
+    src: url("../../src/font/ChaChicle.otf") format("truetype");
     font-weight: normal;
     font-style: normal;
 } .font-chicle {
@@ -205,7 +205,7 @@ footer {
 
 /* SET WHEEL */
 .set-wheel-section{
-    height:60vh;
+    height:75vh;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -247,8 +247,7 @@ footer {
     background:#262626;
     border-radius:15px;
     overflow:hidden;
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
     border:1px solid #444;
     transform-style:preserve-3d;
     transition:

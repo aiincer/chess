@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmniChess</title>
     <link rel="icon" type="image/png" href="./src/img/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <script>
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const folder = isMobile ? "mobile" : "pc";
+        const css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = `./index/${folder}/style.css`;
+        document.head.appendChild(css);
+        const js = document.createElement("script");
+        js.src = `./index/${folder}/script.js`;
+        js.defer = true;
+        document.head.appendChild(js);
+    </script>
 </head>
 
 <body class="dark">
@@ -62,7 +73,6 @@
 <footer>
     &copy; 2026 AIincer & OmniChess
 </footer>
-<script src="./script.js"></script>
 <script type="module">
     import { loadBar } from "./api/bar.js";
     document.getElementById("topbar").innerHTML = loadBar(".");
