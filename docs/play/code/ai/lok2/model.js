@@ -202,8 +202,10 @@ function train(games = 40, aiColor = "white") {
         let reward = 0;
 
         if (game.winner === aiColor) {
-            reward = game.length*1.5;
-        }
+            reward = (game.length * -1) + 10000;
+        } /*else {
+            reward = game.length * 1
+        }*/
 
     
         if (reward > 0) {
