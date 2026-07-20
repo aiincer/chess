@@ -309,3 +309,25 @@ body{
 .boardRotated .fileLabel{
     transform: rotate(180deg);
 }
+
+/* button */
+#resignButton{
+    display:none;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #3a404d;
+    background:#c0392b;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#resignButton:hover{
+    background:#e74c3c;
+}
+
+#resignButton.active{
+    display:block;
+}
