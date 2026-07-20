@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aussehen</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="../../src/img/logo.png">
+</head>
+<body>
+
+    <div id="topbar"></div>
+
+    <div class="container">
+        <div class="content">
+
+            <div class="card">
+                <h2>Skin</h2>
+                <a  href="./skins">
+                    <div id="boardPreview">
+                        <!-- Brett -->
+                    </div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <h2>Profilbild</h2>
+                <a  href="./picture">
+                    <div id="picturePreview">
+                        <!-- Profilbild -->
+                    </div>
+                </a>
+            </div>
+
+            <div class="card">
+                <h2>Profilbild</h2>
+                <a  href="./picture">
+                    <div id="pictureFriends">
+                        <!-- Freunde -->
+                    </div>
+                </a>
+                <!-- hinweis: -->
+                <h1>todo</h1>
+            </div>
+
+        </div>
+    </div>
+
+<script type="module">
+    import { loadBar } from "../api/bar.js";
+    document.getElementById("topbar").innerHTML = loadBar("..");
+</script>
+<script>
+function renderBoardPreview() {
+    const skin = JSON.parse(
+        sessionStorage.getItem("skin") ||
+        '{"set":"standard","color":{}}'
+    );
+    const setId = skin.set || "standard";
+    const colors = Object.assign({
+        l: "#b58863",
+        L: "#f0d9b5",
+        m: "#2e7d32",
+        M: "#66bb6a",
+        t: "#b71c1c",
+        T: "#ef5350"
+    }, skin.color || {});
+    const board = document.getElementById("boardPreview");
+    board.innerHTML = "";
+    board.style.display = "grid";
+    board.style.gridTemplateColumns = "repeat(4, 70px)";
+    board.style.gridTemplateRows = "repeat(4, 70px)";
+    board.style.gap = "0";
+    const layout = [
+        "mmmD",
+        "..mm",
+        ".m.m",
+        "x..x"
+    ];
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+            const square = document.createElement("div");
+            square.style.width = "70px";
+            square.style.height = "70px";
+            square.style.display = "flex";
+            square.style.alignItems = "center";
+            square.style.justifyContent = "center";
+            const dark = (x + y) % 2 === 1;
+            let background = dark ? colors.l : colors.L;
+            const cell = layout[y][x];
+            if (cell === "m") {
+                background = dark ? colors.m : colors.M;
+            }
+            if (cell === "x") {
+                background = dark ? colors.t : colors.T;
+            }
+            square.style.background = background;
+            if (cell === "D") {
+                const img = document.createElement("img");
+                img.src = `../src/img/sets/${setId}/white/d.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+            if (cell === "x") {
+                const img = document.createElement("img");
+                img.src = `../src/img/sets/${setId}/black/b.png`;
+                img.style.width = "80%";
+                img.style.height = "80%";
+                square.appendChild(img);
+            }
+            board.appendChild(square);
+        }
+    }
+}
+renderBoardPreview();
+</script>
+</body>
+</html>
