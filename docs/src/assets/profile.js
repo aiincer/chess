@@ -1,6 +1,9 @@
 function loadProfile(id, pre) {
     //session-storage
-    const profilePicData = JSON.parse(sessionStorage.getItem("profile-picture"));
+    const profilePicData = JSON.parse(
+        sessionStorage.getItem("profile-picture")
+        || '{"picture":"txt-prof","color":"#ff00ea","border":"none"}'
+    );
     //select
     const div = document.getElementById(id);
     if (!div) return;
@@ -13,4 +16,6 @@ function loadProfile(id, pre) {
     div.style.backgroundSize = "cover";
     div.style.backgroundPosition = "center";
     div.style.backgroundRepeat = "no-repeat";
+    //hintergrund
+    div.style.backgroundColor = profilePicData.color;
 }
