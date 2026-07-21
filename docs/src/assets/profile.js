@@ -7,15 +7,45 @@ const profile = {
 sessionStorage.setItem("profile-picture", JSON.stringify(profile));
 */
 
-export function loadProfile(id, pre) {
+// external
+export function loadProfile(html, id, pre = "") {
+    const profilePicData = JSON.parse(
+        sessionStorage.getItem("profile-picture") ||
+        '{"picture":"txt-prof","color":"#ff00ea","border":"none"}'
+    );
+    const images = {
+        "txt-prof": "standard.png"
+    };
+    const image =
+        "src/img/profilePics/" +
+        (images[profilePicData.picture] || "standard.png");
+    const style = `
+        background-image:url("${pre}${image}");
+        background-size:cover;
+        background-position:center;
+        background-repeat:no-repeat;
+        background-color:${profilePicData.color};
+    `;
+    const regex = new RegExp(
+        `(<[^>]*id=["']${id}["'][^>]*)(>)`,
+        "i"
+    );
+    return html.replace(regex, `$1 style="${style}"$2`);
+}
+
+export function loadProfileDirect(id, pre) {
+    const div = document.getElementById(id);
+    if (!div) return;
+    loadProfileI(div ,pre);
+}
+
+// internal
+function loadProfileI(div, pre) {
     //session-storage
     const profilePicData = JSON.parse(
         sessionStorage.getItem("profile-picture")
         || '{"picture":"txt-prof","color":"#ff00ea","border":"none"}'
     );
-    //select
-    const div = document.getElementById(id);
-    if (!div) return;
     //Bild
     const images = {
         "txt-prof": "standard.png"

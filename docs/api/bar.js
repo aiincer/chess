@@ -54,7 +54,15 @@ export async function loadBar(level) {
     </style>
   `;
   const sessionId = sessionStorage.getItem("session-id");
-  const html = sessionId
+  const { loadProfile } = await import("../src/assets/profile.js");
+  const profilePic = `
+        <div
+          id="navbar-profile"
+          class="profile"
+          onclick="location.href='${level}/profile'"
+        ></div>
+        `
+  let html = sessionId
     ? `
     <div class="navbar">
       <a class="logo" href="${level}/home">
@@ -69,11 +77,7 @@ export async function loadBar(level) {
         <button class="btn" onclick="location.href='${level}/profile/friends'">
           Freunde
         </button>
-        <div
-          id="navbar-profile"
-          class="profile"
-          onclick="location.href='${level}/profile'"
-        ></div>
+        ${loadProfile(profilePic, "navbar-profile", level)}
       </div>
     </div>
   `
@@ -94,11 +98,5 @@ export async function loadBar(level) {
       </div>
     </div>
   `;
-
-  if (sessionId) {
-    const { loadProfile } = await import("../src/assets/profile.js");
-    loadProfile("navbar-profile", level);
-  }
-
   return style + html;
 }
