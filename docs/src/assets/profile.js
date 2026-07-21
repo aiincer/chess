@@ -70,4 +70,4 @@ function applyBorder(div, borderString) {
             return;
     }
     div.appendChild(border);
-}1
+};
