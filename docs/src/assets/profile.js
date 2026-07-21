@@ -7,7 +7,7 @@ const profile = {
 sessionStorage.setItem("profile-picture", JSON.stringify(profile));
 */
 
-function loadProfile(id, pre) {
+export function loadProfile(id, pre) {
     //session-storage
     const profilePicData = JSON.parse(
         sessionStorage.getItem("profile-picture")

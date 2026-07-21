@@ -95,8 +95,10 @@ export async function loadBar(level) {
     </div>
   `;
 
-  const { loadProfile } = await import("../src/assets/Profiler.js");
-  loadProfile("navbar-profile", level);
+  if (sessionId) {
+    const { loadProfile } = await import("../src/assets/profile.js");
+    loadProfile("navbar-profile", level);
+  }
 
   return style + html;
 }
