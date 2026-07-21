@@ -310,9 +310,10 @@ body{
 
 .boardRotated img,
 .boardRotated .rankLabel,
-.boardRotated .fileLabel{
-    transform: rotate(180deg);
-}
+.boardRotated .fileLabel
+    {
+        transform: rotate(180deg);
+    }
 
 /* button */
 #resignButton{
@@ -357,7 +358,6 @@ body{
     z-index:10;
     opacity:.5;
 }
-
 
 #arrowSVG{
     position:absolute;

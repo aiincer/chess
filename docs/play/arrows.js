@@ -193,16 +193,27 @@ function drawCircle(x,y){
         size*0.45+"px";
 
 
-    c.style.left =
-        x*size+
-        size*0.275+
-        "px";
+let drawX = x;
+let drawY = y;
 
 
-    c.style.top =
-        y*size+
-        size*0.275+
-        "px";
+// schwarze Perspektive
+if(board.classList.contains("boardRotated")){
+    drawX = 7 - x;
+    drawY = 7 - y;
+}
+
+
+c.style.left =
+    drawX * size +
+    size * 0.275 +
+    "px";
+
+
+c.style.top =
+    drawY * size +
+    size * 0.275 +
+    "px";
 
 
     c.style.borderColor =
@@ -212,10 +223,7 @@ function drawCircle(x,y){
 
     // Drehung übernehmen
     if(board.classList.contains("boardRotated")){
-
-        c.style.transform =
-            "rotate(180deg)";
-
+        
         c.style.transformOrigin =
             "center";
 
@@ -364,24 +372,22 @@ markerId;
 
 marker.setAttribute(
 "markerWidth",
-"7"
+"4"
 );
 
 marker.setAttribute(
 "markerHeight",
-"7"
+"4"
 );
-
 
 marker.setAttribute(
 "refX",
-"6"
+"4"
 );
-
 
 marker.setAttribute(
 "refY",
-"3.5"
+"2"
 );
 
 
@@ -401,7 +407,7 @@ document.createElementNS(
 
 polygon.setAttribute(
 "points",
-"0 0, 7 3.5, 0 7"
+"0 0, 4 2, 0 4"
 );
 
 
@@ -463,7 +469,7 @@ a.color
 
 line.setAttribute(
 "stroke-width",
-size*0.12
+size*0.08
 );
 
 
