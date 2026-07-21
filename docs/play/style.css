@@ -29,6 +29,10 @@ body{
 }
 
 /* Schachbrett */
+#boardWrapper{
+    position:relative;
+}
+
 #board{
     display:grid;
 
@@ -306,12 +310,13 @@ body{
 
 .boardRotated img,
 .boardRotated .rankLabel,
-.boardRotated .fileLabel{
-    transform: rotate(180deg);
-}
+.boardRotated .fileLabel
+    {
+        transform: rotate(180deg);
+    }
 
 /* button */
-#resignButton{
+#resignButton {
     display:none;
     padding:12px;
     border-radius:8px;
@@ -324,10 +329,84 @@ body{
     transition:.2s;
 }
 
-#resignButton:hover{
+#resignButton:hover {
     background:#e74c3c;
 }
 
-#resignButton.active{
+#resignButton.active {
     display:block;
+}
+
+/* arrow */
+#arrowControls {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-top:10px;
+}
+
+#arrowButton {
+    flex:1;
+    padding:12px 16px;
+    border-radius:8px;
+    border:1px solid #3a404d;
+    background:#222733;
+    color:#ddd;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .1s ease;
+} #arrowButton:hover {
+    background:#2d3442;
+    border-color:#ffd54f;
+    box-shadow:
+        0 0 12px rgba(255,213,79,.25);
+} #arrowButton:active {
+    transform:scale(.97);
+}
+#arrowButton.active {
+    background:#3a4f2f;
+    border-color:#66bb6a;
+    color:#fff;
+    box-shadow:
+        0 0 14px rgba(102,187,106,.35);
+}
+
+#arrowColor {
+    width:42px;
+    height:42px;
+    padding:3px;
+    border-radius:8px;
+    border:1px solid #3a404d;
+    background:#222733;
+    cursor:pointer;
+} #arrowColor:hover {
+    border-color:#ffd54f;
+}
+
+.arrowCircle{ 
+    position:absolute;
+    border-radius:50%;
+    border:6px solid;
+    pointer-events:none;
+    z-index:10;
+}
+
+#arrowSVG {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:9;
+}
+
+.arrowLine {
+    cursor:pointer;
+    pointer-events:auto;
+    opacity:.5;
 }

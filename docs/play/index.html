@@ -11,7 +11,9 @@
 <div id="game">
 
     <div id="boardContainer">
-        <div id="board"></div>
+        <div id="boardWrapper">
+            <div id="board"></div>
+        </div>
     </div>
 
     <div id="sidebar">
@@ -37,6 +39,12 @@
             Aufgeben
         </button>
         
+        <div id="arrowControls" style="display:none">
+            <input type="color" id="arrowColor" value="#ff0000">
+            <button id="arrowButton">
+                Pfeile
+            </button>
+        </div>
     </div>
 
 </div> 
@@ -47,6 +55,7 @@
 <script src="select.js"></script>
 <script src="script.js"></script>
 <script src="move.js"></script>
+<script src="arrows.js"></script>
 
 </body>
 </html> 
