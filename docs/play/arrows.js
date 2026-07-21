@@ -336,7 +336,7 @@ svg.innerHTML="";
 const size =
 board.clientWidth/8;
 
-
+const shorten = size * 0.15;
 
 arrows.forEach(
 (a,index)=>{
@@ -371,23 +371,23 @@ markerId;
 
 
 marker.setAttribute(
-"markerWidth",
-"4"
+    "markerWidth",
+    "10"
 );
 
 marker.setAttribute(
-"markerHeight",
-"4"
+    "markerHeight",
+    "6"
 );
 
 marker.setAttribute(
-"refX",
-"4"
+    "refX",
+    "7"
 );
 
 marker.setAttribute(
-"refY",
-"2"
+    "refY",
+    "2"
 );
 
 
@@ -407,7 +407,7 @@ document.createElementNS(
 
 polygon.setAttribute(
 "points",
-"0 0, 4 2, 0 4"
+"4 0, 10 2, 4 4"
 );
 
 
@@ -419,7 +419,7 @@ a.color
 
 polygon.setAttribute(
 "opacity",
-"0.5"
+"1"
 );
 
 
@@ -448,15 +448,31 @@ a.from.y*size+size/2
 
 
 
+let dx =
+(a.to.x*size+size/2) -
+(a.from.x*size+size/2);
+
+
+let dy =
+(a.to.y*size+size/2) -
+(a.from.y*size+size/2);
+
+
+let length =
+Math.sqrt(dx*dx+dy*dy);
+
+
 line.setAttribute(
 "x2",
-a.to.x*size+size/2
+a.to.x*size+size/2 -
+(dx/length)*shorten
 );
 
 
 line.setAttribute(
 "y2",
-a.to.y*size+size/2
+a.to.y*size+size/2 -
+(dy/length)*shorten
 );
 
 

@@ -356,7 +356,6 @@ body{
     border:6px solid;
     pointer-events:none;
     z-index:10;
-    opacity:.5;
 }
 
 #arrowSVG{
