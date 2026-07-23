@@ -7,7 +7,7 @@ const profile = {
 sessionStorage.setItem("profile-picture", JSON.stringify(profile));
 */
 
-// external
+// string
 export function loadProfile(html, id, pre = "") {
     const profilePicData = JSON.parse(
         sessionStorage.getItem("profile-picture") ||
@@ -33,13 +33,7 @@ export function loadProfile(html, id, pre = "") {
     return html.replace(regex, `$1 style="${style}"$2`);
 }
 
-export function loadProfileDirect(id, pre) {
-    const div = document.getElementById(id);
-    if (!div) return;
-    loadProfileI(div ,pre);
-}
-
-// internal
+// html
 function loadProfileI(div, pre) {
     //session-storage
     const profilePicData = JSON.parse(
@@ -61,7 +55,9 @@ function loadProfileI(div, pre) {
     applyBorder(div, profilePicData.border);
 }
 
-function applyBorder(div, borderString) {
+function applyBorder(id, borderString) {
+    const div = document.getElementById(id);
+    if (!div) return;
     if (!borderString) return;
     const i = borderString.indexOf(";");
     const type = borderString.substring(0, i);
