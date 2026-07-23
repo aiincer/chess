@@ -24,10 +24,15 @@
             </div>
             
             <div class="card">
-                <h2>Profilbild</h2>
-                <a  href="./picture">
-                    <div id="picturePreview">
-                        <!-- Profilbild -->
+                <h2>Freunde</h2>
+                <a  href="./friends">
+                    <div style="
+                        background-color: darkgreen;
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 25%;
+                        ">
+                        <!-- Freunde -->
                     </div>
                 </a>
             </div>
@@ -35,8 +40,8 @@
             <div class="card">
                 <h2>Profilbild</h2>
                 <a  href="./picture">
-                    <div id="pictureFriends">
-                        <!-- Freunde -->
+                    <div id="picturePreview">
+                        <!-- Profilbild -->
                     </div>
                 </a>
                 <!-- hinweis: -->
@@ -48,7 +53,7 @@
 
 <script type="module">
     import { loadBar } from "../api/bar.js";
-    document.getElementById("topbar").innerHTML = loadBar("..");
+    document.getElementById("topbar").innerHTML = await loadBar("..");
 </script>
 <script>
 function renderBoardPreview() {

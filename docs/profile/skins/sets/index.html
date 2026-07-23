@@ -22,7 +22,7 @@
 
 <script type="module">
 import { loadBar } from "../../../api/bar.js";
-document.getElementById("topbar").innerHTML = loadBar("../../..");
+document.getElementById("topbar").innerHTML = await loadBar("../../..");
 const grid = document.getElementById("setGrid");
 
 // JSON Cache

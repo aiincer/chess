@@ -1,4 +1,4 @@
-export function loadBar(level) {
+export async function loadBar(level) {
   const style = `
     <style>
       .navbar {
@@ -53,10 +53,16 @@ export function loadBar(level) {
       }
     </style>
   `;
-
   const sessionId = sessionStorage.getItem("session-id");
-
-  const html = sessionId
+  const { loadProfile } = await import("../src/assets/profile.js");
+  const profilePic = `
+        <div
+          id="navbar-profile"
+          class="profile"
+          onclick="location.href='${level}/profile'"
+        ></div>
+        `
+  let html = sessionId
     ? `
     <div class="navbar">
       <a class="logo" href="${level}/home">
@@ -71,12 +77,7 @@ export function loadBar(level) {
         <button class="btn" onclick="location.href='${level}/profile/friends'">
           Freunde
         </button>
-        <img 
-          class="profile" 
-          src="https://aiincer.github.io/chess/src/img/profile.png" 
-          alt="Profile"
-          onclick="location.href='${level}/profile'"
-        />
+        ${loadProfile(profilePic, "navbar-profile", level)}
       </div>
     </div>
   `
@@ -97,6 +98,5 @@ export function loadBar(level) {
       </div>
     </div>
   `;
-
   return style + html;
 }
