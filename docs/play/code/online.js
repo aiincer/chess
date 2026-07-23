@@ -46,6 +46,17 @@ function initOnlineGame(){
             );
         }
     )
+    .on(
+        "broadcast",
+        {
+            event:"resign"
+        },
+        data=>{
+            receiveResign(
+                data.payload
+            );
+        }
+    )
     .subscribe(status=>{
         console.log(
             "Realtime:",
@@ -391,6 +402,52 @@ box.appendChild(button);
 overlay.appendChild(box);
 document.body.appendChild(overlay);
 }
+// =====================================================
+// RESIGN
+// =====================================================
+function sendResign(){
+    if(!chessChannel)
+        return;
+    chessChannel.send({
+        type:"broadcast",
+        event:"resign",
+        payload:{
+            player:playerColor
+        }
+    });
+}
+
+function receiveResign(data){
+    winner =
+    data.player==="white"
+    ? "black"
+    : "white";
+    updateGameStatus(
+        winner==="white"
+        ? "Weiss gewinnt (Aufgabe)"
+        : "Schwarz gewinnt (Aufgabe)"
+    );
+    updateGameInfo();
+}
+
+document.getElementById("resignButton").onclick=function(){
+    if(winner)
+        return;
+    sendResign();
+    winner =
+    playerColor==="white"
+    ? "black"
+    : "white";
+    updateGameStatus(
+        winner==="white"
+        ? "Weiss gewinnt (Aufgabe)"
+        : "Schwarz gewinnt (Aufgabe)"
+    );
+    updateGameInfo();
+};
+
+document.getElementById("resignButton").classList.add("active");
+
 // START
 initOnlineGame();
 initLocalControls();
