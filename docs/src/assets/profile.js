@@ -14,13 +14,13 @@ export function loadProfile(html, id, pre = "") {
         '{"picture":"txt-prof","color":"#ff00ea","border":"none"}'
     );
     const images = {
-        "txt-prof": "standard.png"
+        'txt-prof': 'standard.png'
     };
     const image =
-        "src/img/profilePics/" +
-        (images[profilePicData.picture] || "standard.png");
+        'src/img/profilePics/' +
+        (images[profilePicData.picture] || 'standard.png');
     const style = `
-        background-image:url("${pre}${image}");
+        background-image:url('${pre}/${image}');
         background-size:cover;
         background-position:center;
         background-repeat:no-repeat;
