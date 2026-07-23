@@ -14,23 +14,67 @@ export function loadProfile(html, id, pre = "") {
         '{"picture":"txt-prof","color":"#ff00ea","border":"none"}'
     );
     const images = {
-        'txt-prof': 'standard.png'
+        "txt-prof": "standard.png"
     };
     const image =
-        'src/img/profilePics/' +
-        (images[profilePicData.picture] || 'standard.png');
+        "src/img/profilePics/" +
+        (images[profilePicData.picture] || "standard.png");
     const style = `
+        position:relative;
+        overflow:visible;
         background-image:url('${pre}/${image}');
         background-size:cover;
         background-position:center;
         background-repeat:no-repeat;
         background-color:${profilePicData.color};
+        z-index:1;
     `;
-    const regex = new RegExp(
-        `(<[^>]*id=["']${id}["'][^>]*)(>)`,
-        "i"
+    // style einfügen
+    html = html.replace(
+        new RegExp(`(<[^>]*id=["']${id}["'][^>]*)(>)`, "i"),
+        `$1 style="${style}"$2`
     );
-    return html.replace(regex, `$1 style="${style}"$2`);
+    // border
+    if (profilePicData.border && profilePicData.border !== "none") {
+        const i = profilePicData.border.indexOf(";");
+        const type = profilePicData.border.substring(0, i);
+        const param = profilePicData.border.substring(i + 1);
+        let background = "";
+        switch (type) {
+            case "basic":
+                background = param;
+                break;
+            case "gradient": {
+                const [dir, ...colors] = JSON.parse(param);
+                const dirs = {
+                    top: "to top",
+                    left: "to left",
+                    topleft: "to top left",
+                    topright: "to top right"
+                };
+                background = `linear-gradient(${dirs[dir] || "to right"}, ${colors.join(",")})`;
+                break;
+            }
+            default:
+                return html;
+        }
+        html = html.replace(
+            new RegExp(`(<[^>]*id=["']${id}["'][^>]*>)([\\s\\S]*?)(</div>)`, "i"),
+            `$1<div class="profile-border" style="
+                position:absolute;
+                inset:-3%;
+                border-radius:50%;
+                z-index:-1;
+                pointer-events:none;
+                background:${background};
+                -webkit-mask:
+                    radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+                mask:
+                    radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+            "></div>$2$3`
+        );
+    }
+    return html;
 }
 
 // html
