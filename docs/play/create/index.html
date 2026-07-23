@@ -100,7 +100,7 @@ const skillMap = {
     }
 };
 
-document.getElementById("topbar").innerHTML = loadBar("../..");
+document.getElementById("topbar").innerHTML = await loadBar("../..");
 const session = sessionStorage.getItem("session-id");
 if (!session) {
     location.href = "../../login";
