@@ -524,13 +524,13 @@ export function getRandomMove(
     // SKILL
     // ==========================
 
-    let depth = 10;
+    let depth = 3;
 
     if (typeof skill === "number") {
 
         if (skill <= 1) depth = 1;
         else if (skill === 2) depth = 2;
-        else depth = 10;
+        else depth = 3;
     }
 
 
