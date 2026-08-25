@@ -1,260 +1,594 @@
 // ==========================
-// LEARNING MEMORY
+// PIECE VALUES
 // ==========================
-const moveScores = new Map();
+
+const pieceValue = {
+    b: 100,   // Bauer
+    s: 320,   // Springer
+    l: 330,   // Läufer
+    t: 500,   // Turm
+    d: 900,   // Dame
+    k: 20000  // König
+};
+
 
 // ==========================
 // HELPERS
 // ==========================
-function cloneBoard(b) {
- return b.map(r => [...r]);
+
+function cloneBoard(board) {
+    return board.map(row => [...row]);
 }
 
-function isWhite(p){ return p && p === p.toUpperCase(); }
-function isBlack(p){ return p && p === p.toLowerCase(); }
+function isWhite(p) {
+    return p && p === p.toUpperCase();
+}
 
-function inBounds(x,y){ return x>=0 && x<8 && y>=0 && y<8; }
+function isBlack(p) {
+    return p && p === p.toLowerCase();
+}
+
+function inBounds(x, y) {
+    return x >= 0 && x < 8 && y >= 0 && y < 8;
+}
+
+function oppositeColor(color) {
+    return color === "white" ? "black" : "white";
+}
+
 
 // ==========================
 // MOVE GENERATION
 // ==========================
+
 function getMoves(board, x, y) {
- const piece = board[y][x];
- if (!piece) return [];
 
- const white = isWhite(piece);
- const p = piece.toLowerCase();
- const moves = [];
+    const piece = board[y][x];
 
- function add(nx, ny) {
-   if (!inBounds(nx, ny)) return;
-   const t = board[ny][nx];
-   if (!t || (white ? isBlack(t) : isWhite(t))) {
-     moves.push({from:[x,y], to:[nx,ny]});
-   }
- }
+    if (!piece) return [];
 
- // PAWN
- if (p === "b") {
-   const dir = white ? -1 : 1;
-   const start = white ? 6 : 1;
+    const white = isWhite(piece);
+    const p = piece.toLowerCase();
 
-   if (inBounds(x, y+dir) && !board[y+dir][x]) {
-     moves.push({from:[x,y], to:[x,y+dir]});
+    const moves = [];
 
-     if (y === start && !board[y+2*dir][x]) {
-       moves.push({from:[x,y], to:[x,y+2*dir]});
-     }
-   }
+    function add(nx, ny) {
 
-   for (let dx of [-1,1]) {
-     const nx = x + dx, ny = y + dir;
-     if (inBounds(nx,ny)) {
-       const t = board[ny][nx];
-       if (t && (white ? isBlack(t) : isWhite(t))) {
-         moves.push({from:[x,y], to:[nx,ny]});
-       }
-     }
-   }
- }
+        if (!inBounds(nx, ny)) return;
 
- // KNIGHT
- else if (p === "s") {
-   const jumps = [
-     [1,2],[2,1],[2,-1],[1,-2],
-     [-1,-2],[-2,-1],[-2,1],[-1,2]
-   ];
-   for (const [dx,dy] of jumps) add(x+dx,y+dy);
- }
+        const target = board[ny][nx];
 
- // BISHOP / ROOK / QUEEN
- else if (["l","t","d"].includes(p)) {
-   let dirs = [];
+        if (
+            !target ||
+            (white ? isBlack(target) : isWhite(target))
+        ) {
+            moves.push({
+                from: [x, y],
+                to: [nx, ny]
+            });
+        }
+    }
 
-   if (p === "l" || p === "d")
-     dirs.push([1,1],[-1,1],[1,-1],[-1,-1]);
 
-   if (p === "t" || p === "d")
-     dirs.push([1,0],[-1,0],[0,1],[0,-1]);
+    // ==========================
+    // BAUER
+    // ==========================
 
-   for (const [dx,dy] of dirs) {
-     let nx = x + dx, ny = y + dy;
+    if (p === "b") {
 
-     while (inBounds(nx,ny)) {
-       const t = board[ny][nx];
+        const dir = white ? -1 : 1;
+        const start = white ? 6 : 1;
 
-       if (!t) {
-         moves.push({from:[x,y], to:[nx,ny]});
-       } else {
-         if (white ? isBlack(t) : isWhite(t)) {
-           moves.push({from:[x,y], to:[nx,ny]});
-         }
-         break;
-       }
+        // Ein Feld
+        if (
+            inBounds(x, y + dir) &&
+            !board[y + dir][x]
+        ) {
 
-       nx += dx;
-       ny += dy;
-     }
-   }
- }
+            moves.push({
+                from: [x, y],
+                to: [x, y + dir]
+            });
 
- // KING
- else if (p === "k") {
-   for (let dx=-1; dx<=1; dx++) {
-     for (let dy=-1; dy<=1; dy++) {
-       if (dx || dy) add(x+dx, y+dy);
-     }
-   }
- }
+            // Zwei Felder
+            if (
+                y === start &&
+                !board[y + 2 * dir][x]
+            ) {
+                moves.push({
+                    from: [x, y],
+                    to: [x, y + 2 * dir]
+                });
+            }
+        }
 
- return moves;
+
+        // Schlagen
+        for (const dx of [-1, 1]) {
+
+            const nx = x + dx;
+            const ny = y + dir;
+
+            if (!inBounds(nx, ny)) continue;
+
+            const target = board[ny][nx];
+
+            if (
+                target &&
+                (white ? isBlack(target) : isWhite(target))
+            ) {
+                moves.push({
+                    from: [x, y],
+                    to: [nx, ny]
+                });
+            }
+        }
+    }
+
+
+    // ==========================
+    // SPRINGER
+    // ==========================
+
+    else if (p === "s") {
+
+        const jumps = [
+            [1, 2],
+            [2, 1],
+            [2, -1],
+            [1, -2],
+            [-1, -2],
+            [-2, -1],
+            [-2, 1],
+            [-1, 2]
+        ];
+
+        for (const [dx, dy] of jumps) {
+            add(x + dx, y + dy);
+        }
+    }
+
+
+    // ==========================
+    // LÄUFER / TURM / DAME
+    // ==========================
+
+    else if (["l", "t", "d"].includes(p)) {
+
+        const dirs = [];
+
+        if (p === "l" || p === "d") {
+            dirs.push(
+                [1, 1],
+                [-1, 1],
+                [1, -1],
+                [-1, -1]
+            );
+        }
+
+        if (p === "t" || p === "d") {
+            dirs.push(
+                [1, 0],
+                [-1, 0],
+                [0, 1],
+                [0, -1]
+            );
+        }
+
+        for (const [dx, dy] of dirs) {
+
+            let nx = x + dx;
+            let ny = y + dy;
+
+            while (inBounds(nx, ny)) {
+
+                const target = board[ny][nx];
+
+                if (!target) {
+
+                    moves.push({
+                        from: [x, y],
+                        to: [nx, ny]
+                    });
+
+                } else {
+
+                    if (
+                        white
+                            ? isBlack(target)
+                            : isWhite(target)
+                    ) {
+                        moves.push({
+                            from: [x, y],
+                            to: [nx, ny]
+                        });
+                    }
+
+                    break;
+                }
+
+                nx += dx;
+                ny += dy;
+            }
+        }
+    }
+
+
+    // ==========================
+    // KÖNIG
+    // ==========================
+
+    else if (p === "k") {
+
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+
+                if (dx === 0 && dy === 0) continue;
+
+                add(x + dx, y + dy);
+            }
+        }
+    }
+
+    return moves;
 }
+
 
 // ==========================
 // ALL MOVES
 // ==========================
+
 function getAllMoves(board, color) {
- const moves = [];
 
- for (let y=0;y<8;y++) {
-   for (let x=0;x<8;x++) {
-     const p = board[y][x];
-     if (!p) continue;
+    const moves = [];
 
-     if (color === "white" && !isWhite(p)) continue;
-     if (color === "black" && !isBlack(p)) continue;
+    for (let y = 0; y < 8; y++) {
 
-     moves.push(...getMoves(board,x,y));
-   }
- }
+        for (let x = 0; x < 8; x++) {
 
- return moves;
-}
+            const piece = board[y][x];
 
-// ==========================
-// APPLY MOVE + KING CAPTURE WIN
-// ==========================
-function applyMove(board, move) {
- const [fx,fy] = move.from;
- const [tx,ty] = move.to;
+            if (!piece) continue;
 
- const captured = board[ty][tx];
+            if (
+                color === "white" &&
+                !isWhite(piece)
+            ) continue;
 
- board[ty][tx] = board[fy][fx];
- board[fy][fx] = null;
+            if (
+                color === "black" &&
+                !isBlack(piece)
+            ) continue;
 
- if (captured && captured.toLowerCase() === "k") {
-   return "win";
- }
-
- return null;
-}
-
-// ==========================
-// BIG AI UPDATE:
-// ==========================
-
-function moveKey(m) {
- return JSON.stringify(m);
-}
-function chooseMove(board, moves) {
-    if (!moves.length) return null;
-    for (const move of moves) {
-        const [tx, ty] = move.to;
-        const target = board[ty][tx];
-
-        if (target && target.toLowerCase() === "k") {
-            return move;
+            moves.push(
+                ...getMoves(board, x, y)
+            );
         }
     }
-    let bestCapture = null;
-    let bestValue = -1;
 
-    for (const move of moves) {
-        const [tx, ty] = move.to;
-        const target = board[ty][tx];
+    return moves;
+}
 
-        if (target) {
-            const value = pieceValue[target.toLowerCase()];
-            if (value > bestValue) {
-                bestValue = value;
-                bestCapture = move;
+
+// ==========================
+// APPLY MOVE
+// ==========================
+
+function applyMove(board, move) {
+
+    const [fx, fy] = move.from;
+    const [tx, ty] = move.to;
+
+    const captured = board[ty][tx];
+
+    board[ty][tx] = board[fy][fx];
+    board[fy][fx] = "";
+
+    return {
+        captured,
+        winner:
+            captured &&
+            captured.toLowerCase() === "k"
+                ? (isWhite(board[ty][tx])
+                    ? "white"
+                    : "black")
+                : null
+    };
+}
+
+
+// ==========================
+// POSITION EVALUATION
+// ==========================
+
+function evaluateBoard(board, aiColor) {
+
+    let score = 0;
+
+    for (let y = 0; y < 8; y++) {
+
+        for (let x = 0; x < 8; x++) {
+
+            const piece = board[y][x];
+
+            if (!piece) continue;
+
+            const value =
+                pieceValue[piece.toLowerCase()] || 0;
+
+            if (
+                (aiColor === "white" && isWhite(piece)) ||
+                (aiColor === "black" && isBlack(piece))
+            ) {
+                score += value;
+            } else {
+                score -= value;
             }
         }
     }
 
-    if (bestCapture) return bestCapture;
-    let bestMove = null;
+    return score;
+}
+
+
+// ==========================
+// MOVE ORDERING
+// ==========================
+
+function orderMoves(board, moves) {
+
+    return moves.sort((a, b) => {
+
+        const aTarget = board[a.to[1]][a.to[0]];
+        const bTarget = board[b.to[1]][b.to[0]];
+
+        const aValue = aTarget
+            ? pieceValue[aTarget.toLowerCase()]
+            : 0;
+
+        const bValue = bTarget
+            ? pieceValue[bTarget.toLowerCase()]
+            : 0;
+
+        return bValue - aValue;
+    });
+}
+
+
+// ==========================
+// MINIMAX + ALPHA BETA
+// ==========================
+
+function minimax(
+    board,
+    depth,
+    alpha,
+    beta,
+    maximizing,
+    aiColor
+) {
+
+    // Ende der Suche
+    if (depth === 0) {
+        return evaluateBoard(board, aiColor);
+    }
+
+
+    const currentColor =
+        maximizing
+            ? aiColor
+            : oppositeColor(aiColor);
+
+    const moves = getAllMoves(board, currentColor);
+
+    if (moves.length === 0) {
+        return evaluateBoard(board, aiColor);
+    }
+
+
+    const orderedMoves =
+        orderMoves(board, moves);
+
+
+    // ==========================
+    // MAX
+    // ==========================
+
+    if (maximizing) {
+
+        let best = -Infinity;
+
+        for (const move of orderedMoves) {
+
+            const newBoard =
+                cloneBoard(board);
+
+            const result =
+                applyMove(newBoard, move);
+
+
+            // König geschlagen
+            if (result.winner === aiColor) {
+                return 100000;
+            }
+
+            if (
+                result.winner ===
+                oppositeColor(aiColor)
+            ) {
+                continue;
+            }
+
+
+            const score = minimax(
+                newBoard,
+                depth - 1,
+                alpha,
+                beta,
+                false,
+                aiColor
+            );
+
+            best = Math.max(best, score);
+
+            alpha = Math.max(alpha, best);
+
+            if (beta <= alpha) {
+                break;
+            }
+        }
+
+        return best;
+    }
+
+
+    // ==========================
+    // MIN
+    // ==========================
+
+    else {
+
+        let best = Infinity;
+
+        for (const move of orderedMoves) {
+
+            const newBoard =
+                cloneBoard(board);
+
+            const result =
+                applyMove(newBoard, move);
+
+
+            if (
+                result.winner ===
+                oppositeColor(aiColor)
+            ) {
+                return -100000;
+            }
+
+            if (result.winner === aiColor) {
+                continue;
+            }
+
+
+            const score = minimax(
+                newBoard,
+                depth - 1,
+                alpha,
+                beta,
+                true,
+                aiColor
+            );
+
+            best = Math.min(best, score);
+
+            beta = Math.min(beta, best);
+
+            if (beta <= alpha) {
+                break;
+            }
+        }
+
+        return best;
+    }
+}
+
+
+// ==========================
+// NEUE KI
+// ==========================
+//
+// Tiefe 3:
+// KI-Zug
+//   -> Gegnerzug
+//      -> KI-Zug
+//
+// Danach wird die Stellung bewertet.
+//
+
+export function getRandomMove(
+    board,
+    aiColor,
+    skill = 3
+) {
+
+    const moves =
+        getAllMoves(board, aiColor);
+
+    if (!moves.length) {
+        return null;
+    }
+
+
+    // ==========================
+    // SKILL
+    // ==========================
+
+    let depth = 3;
+
+    if (typeof skill === "number") {
+
+        if (skill <= 1) depth = 1;
+        else if (skill === 2) depth = 2;
+        else depth = 3;
+    }
+
+
+    // ==========================
+    // ZÜGE MISCHEN
+    // ==========================
+
+    // Dadurch entscheidet die KI bei
+    // gleich guten Zügen nicht immer gleich.
+
+    const shuffled =
+        [...moves].sort(() => Math.random() - 0.5);
+
+
+    let bestMove = shuffled[0];
     let bestScore = -Infinity;
-    for (const move of moves) {
-        const score = moveScores.get(moveKey(move)) || 0;
+
+
+    // ==========================
+    // ALLE ZÜGE TESTEN
+    // ==========================
+
+    for (const move of shuffled) {
+
+        const newBoard =
+            cloneBoard(board);
+
+        const result =
+            applyMove(newBoard, move);
+
+
+        // König sofort schlagen
+        if (result.winner === aiColor) {
+            return move;
+        }
+
+
+        const score = minimax(
+            newBoard,
+
+            // eigener Zug war schon Ebene 1
+            depth - 1,
+
+            -Infinity,
+            Infinity,
+
+            false,
+            aiColor
+        );
+
+
         if (score > bestScore) {
+
             bestScore = score;
             bestMove = move;
         }
     }
-    if (!bestMove || bestScore === 0) {
-        return moves[Math.floor(Math.random() * moves.length)];
-    }
+
+
     return bestMove;
-}
-
-// ==========================
-// SINGLE GAME
-// ==========================
-function playGame(startBoard, InTurn) {
-const board = cloneBoard(startBoard);
- let turn = InTurn;
- const history = [];
- const maxMoves = 200;
- for (let i=0;i<maxMoves;i++) {
-   const moves = getAllMoves(board, turn);
-   if (moves.length === 0) {
-     return {winner: turn === "white" ? "black" : "white", length: i, history};
-   }
-
-   const move = chooseMove(board, moves);
-   history.push({turn, move});
-
-   const result = applyMove(board, move);
-   if (result === "win") {
-     return {winner: turn, length: i, history};
-   }
-
-   turn = turn === "white" ? "black" : "white";
- }
-
- return {winner:"draw", length:maxMoves, history};
-}// ==========================
-// TRAINING LOOP (RETROSPECTIVE LEARNING)
-// ==========================
-function train(games = 40, aiColor = "white") {
-
-    for (let g = 0; g < games; g++) {
-
-        const game = playGame();
-
-        let reward = 0;
-
-        if (game.winner === aiColor) {
-            reward = (game.length * -1) + 10000;
-        } /*else {
-            reward = game.length * 1
-        }*/
-
-    
-        if (reward > 0) {
-            for (const step of game.history) {
-                const key = moveKey(step.move);
-                moveScores.set(
-                    key,
-                    (moveScores.get(key) || 0) + reward * 0.01
-                );
-            }
-        }
-
-        console.log(
-            `Game ${g + 1}: winner=${game.winner}, AI=${aiColor}`
-        );
-    }
 }
