@@ -1,45 +1,102 @@
-// ==========================
-// PIECE VALUES
-// ==========================
+//
+// model.js
+// KI mit bis zu 10 Halbzügen Suchttiefe
+//
+// Kompatibel mit:
+// getRandomMove(boardMatrix, aiColor, gameDetails.skill)
+//
+
+
+// ============================================================
+// FIGURENWERTE
+// ============================================================
 
 const pieceValue = {
-    b: 100,   // Bauer
-    s: 320,   // Springer
-    l: 330,   // Läufer
-    t: 500,   // Turm
-    d: 900,   // Dame
-    k: 20000  // König
+    b: 100,       // Bauer
+    s: 320,       // Springer
+    l: 330,       // Läufer
+    t: 500,       // Turm
+    d: 900,       // Dame
+    k: 20000      // König
 };
 
 
-// ==========================
+// ============================================================
+// EINSTELLUNGEN
+// ============================================================
+
+const MAX_DEPTH = 10;
+
+// Begrenzung gegen extrem lange Berechnungen.
+// 0 = keine Begrenzung.
+const MAX_NODES = 250000;
+
+let searchedNodes = 0;
+
+
+// ============================================================
+// TRANSPOSITION TABLE
+// ============================================================
+
+const transpositionTable = new Map();
+
+
+// ============================================================
 // HELPERS
-// ==========================
+// ============================================================
 
 function cloneBoard(board) {
     return board.map(row => [...row]);
 }
 
-function isWhite(p) {
-    return p && p === p.toUpperCase();
+
+function isWhite(piece) {
+    return piece && piece === piece.toUpperCase();
 }
 
-function isBlack(p) {
-    return p && p === p.toLowerCase();
+
+function isBlack(piece) {
+    return piece && piece === piece.toLowerCase();
 }
+
 
 function inBounds(x, y) {
-    return x >= 0 && x < 8 && y >= 0 && y < 8;
+    return (
+        x >= 0 &&
+        x < 8 &&
+        y >= 0 &&
+        y < 8
+    );
 }
+
 
 function oppositeColor(color) {
-    return color === "white" ? "black" : "white";
+    return color === "white"
+        ? "black"
+        : "white";
 }
 
 
-// ==========================
+// ============================================================
+// BOARD KEY
+// ============================================================
+
+function boardKey(board, depth, color) {
+
+    let key = "";
+
+    for (let y = 0; y < 8; y++) {
+        key += board[y].join(".");
+        key += "/";
+    }
+
+    return key + "|" + depth + "|" + color;
+}
+
+
+// ============================================================
 // MOVE GENERATION
-// ==========================
+// ============================================================
 
 function getMoves(board, x, y) {
 
@@ -48,9 +105,14 @@ function getMoves(board, x, y) {
     if (!piece) return [];
 
     const white = isWhite(piece);
-    const p = piece.toLowerCase();
+    const type = piece.toLowerCase();
 
     const moves = [];
+
+
+    // --------------------------------------------------------
+    // Hilfsfunktion
+    // --------------------------------------------------------
 
     function add(nx, ny) {
 
@@ -60,8 +122,11 @@ function getMoves(board, x, y) {
 
         if (
             !target ||
-            (white ? isBlack(target) : isWhite(target))
+            (white
+                ? isBlack(target)
+                : isWhite(target))
         ) {
+
             moves.push({
                 from: [x, y],
                 to: [nx, ny]
@@ -70,40 +135,51 @@ function getMoves(board, x, y) {
     }
 
 
-    // ==========================
+    // ========================================================
     // BAUER
-    // ==========================
+    // ========================================================
 
-    if (p === "b") {
+    if (type === "b") {
 
         const dir = white ? -1 : 1;
-        const start = white ? 6 : 1;
+        const startRow = white ? 6 : 1;
 
-        // Ein Feld
+
+        // Ein Feld vorwärts
+
+        const oneY = y + dir;
+
         if (
-            inBounds(x, y + dir) &&
-            !board[y + dir][x]
+            inBounds(x, oneY) &&
+            !board[oneY][x]
         ) {
 
             moves.push({
                 from: [x, y],
-                to: [x, y + dir]
+                to: [x, oneY]
             });
 
-            // Zwei Felder
+
+            // Zwei Felder vom Start
+
+            const twoY = y + dir * 2;
+
             if (
-                y === start &&
-                !board[y + 2 * dir][x]
+                y === startRow &&
+                inBounds(x, twoY) &&
+                !board[twoY][x]
             ) {
+
                 moves.push({
                     from: [x, y],
-                    to: [x, y + 2 * dir]
+                    to: [x, twoY]
                 });
             }
         }
 
 
         // Schlagen
+
         for (const dx of [-1, 1]) {
 
             const nx = x + dx;
@@ -115,8 +191,11 @@ function getMoves(board, x, y) {
 
             if (
                 target &&
-                (white ? isBlack(target) : isWhite(target))
+                (white
+                    ? isBlack(target)
+                    : isWhite(target))
             ) {
+
                 moves.push({
                     from: [x, y],
                     to: [nx, ny]
@@ -126,11 +205,11 @@ function getMoves(board, x, y) {
     }
 
 
-    // ==========================
+    // ========================================================
     // SPRINGER
-    // ==========================
+    // ========================================================
 
-    else if (p === "s") {
+    else if (type === "s") {
 
         const jumps = [
             [1, 2],
@@ -149,16 +228,27 @@ function getMoves(board, x, y) {
     }
 
 
-    // ==========================
+    // ========================================================
     // LÄUFER / TURM / DAME
-    // ==========================
+    // ========================================================
 
-    else if (["l", "t", "d"].includes(p)) {
+    else if (
+        type === "l" ||
+        type === "t" ||
+        type === "d"
+    ) {
 
-        const dirs = [];
+        const directions = [];
 
-        if (p === "l" || p === "d") {
-            dirs.push(
+
+        // Diagonal
+
+        if (
+            type === "l" ||
+            type === "d"
+        ) {
+
+            directions.push(
                 [1, 1],
                 [-1, 1],
                 [1, -1],
@@ -166,8 +256,15 @@ function getMoves(board, x, y) {
             );
         }
 
-        if (p === "t" || p === "d") {
-            dirs.push(
+
+        // Gerade
+
+        if (
+            type === "t" ||
+            type === "d"
+        ) {
+
+            directions.push(
                 [1, 0],
                 [-1, 0],
                 [0, 1],
@@ -175,7 +272,8 @@ function getMoves(board, x, y) {
             );
         }
 
-        for (const [dx, dy] of dirs) {
+
+        for (const [dx, dy] of directions) {
 
             let nx = x + dx;
             let ny = y + dy;
@@ -184,20 +282,28 @@ function getMoves(board, x, y) {
 
                 const target = board[ny][nx];
 
+
+                // Freies Feld
+
                 if (!target) {
 
                     moves.push({
                         from: [x, y],
                         to: [nx, ny]
                     });
+                }
 
-                } else {
+
+                // Figur getroffen
+
+                else {
 
                     if (
                         white
                             ? isBlack(target)
                             : isWhite(target)
                     ) {
+
                         moves.push({
                             from: [x, y],
                             to: [nx, ny]
@@ -207,6 +313,7 @@ function getMoves(board, x, y) {
                     break;
                 }
 
+
                 nx += dx;
                 ny += dy;
             }
@@ -214,29 +321,39 @@ function getMoves(board, x, y) {
     }
 
 
-    // ==========================
+    // ========================================================
     // KÖNIG
-    // ==========================
+    // ========================================================
 
-    else if (p === "k") {
+    else if (type === "k") {
 
         for (let dx = -1; dx <= 1; dx++) {
+
             for (let dy = -1; dy <= 1; dy++) {
 
-                if (dx === 0 && dy === 0) continue;
+                if (
+                    dx === 0 &&
+                    dy === 0
+                ) {
+                    continue;
+                }
 
-                add(x + dx, y + dy);
+                add(
+                    x + dx,
+                    y + dy
+                );
             }
         }
     }
+
 
     return moves;
 }
 
 
-// ==========================
-// ALL MOVES
-// ==========================
+// ============================================================
+// ALLE ZÜGE
+// ============================================================
 
 function getAllMoves(board, color) {
 
@@ -250,18 +367,29 @@ function getAllMoves(board, color) {
 
             if (!piece) continue;
 
+
             if (
                 color === "white" &&
                 !isWhite(piece)
-            ) continue;
+            ) {
+                continue;
+            }
+
 
             if (
                 color === "black" &&
                 !isBlack(piece)
-            ) continue;
+            ) {
+                continue;
+            }
+
 
             moves.push(
-                ...getMoves(board, x, y)
+                ...getMoves(
+                    board,
+                    x,
+                    y
+                )
             );
         }
     }
@@ -270,40 +398,56 @@ function getAllMoves(board, color) {
 }
 
 
-// ==========================
-// APPLY MOVE
-// ==========================
+// ============================================================
+// ZUG AUSFÜHREN
+// ============================================================
 
 function applyMove(board, move) {
 
     const [fx, fy] = move.from;
     const [tx, ty] = move.to;
 
-    const captured = board[ty][tx];
+    const movingPiece =
+        board[fy][fx];
 
-    board[ty][tx] = board[fy][fx];
+    const captured =
+        board[ty][tx];
+
+
+    board[ty][tx] = movingPiece;
     board[fy][fx] = "";
+
+
+    let winner = null;
+
+
+    if (
+        captured &&
+        captured.toLowerCase() === "k"
+    ) {
+
+        winner =
+            isWhite(movingPiece)
+                ? "white"
+                : "black";
+    }
+
 
     return {
         captured,
-        winner:
-            captured &&
-            captured.toLowerCase() === "k"
-                ? (isWhite(board[ty][tx])
-                    ? "white"
-                    : "black")
-                : null
+        winner
     };
 }
 
 
-// ==========================
-// POSITION EVALUATION
-// ==========================
+// ============================================================
+// POSITION BEWERTEN
+// ============================================================
 
 function evaluateBoard(board, aiColor) {
 
     let score = 0;
+
 
     for (let y = 0; y < 8; y++) {
 
@@ -313,13 +457,25 @@ function evaluateBoard(board, aiColor) {
 
             if (!piece) continue;
 
-            const value =
-                pieceValue[piece.toLowerCase()] || 0;
 
-            if (
-                (aiColor === "white" && isWhite(piece)) ||
-                (aiColor === "black" && isBlack(piece))
-            ) {
+            const value =
+                pieceValue[
+                    piece.toLowerCase()
+                ] || 0;
+
+
+            const own =
+                (
+                    aiColor === "white" &&
+                    isWhite(piece)
+                ) ||
+                (
+                    aiColor === "black" &&
+                    isBlack(piece)
+                );
+
+
+            if (own) {
                 score += value;
             } else {
                 score -= value;
@@ -327,37 +483,79 @@ function evaluateBoard(board, aiColor) {
         }
     }
 
+
     return score;
 }
 
 
-// ==========================
-// MOVE ORDERING
-// ==========================
+// ============================================================
+// ZUGWERT
+// ============================================================
 
-function orderMoves(board, moves) {
+function moveOrderValue(board, move) {
 
-    return moves.sort((a, b) => {
+    const target =
+        board[
+            move.to[1]
+        ][
+            move.to[0]
+        ];
 
-        const aTarget = board[a.to[1]][a.to[0]];
-        const bTarget = board[b.to[1]][b.to[0]];
 
-        const aValue = aTarget
-            ? pieceValue[aTarget.toLowerCase()]
-            : 0;
+    if (!target) {
+        return 0;
+    }
 
-        const bValue = bTarget
-            ? pieceValue[bTarget.toLowerCase()]
-            : 0;
 
-        return bValue - aValue;
-    });
+    const capturedValue =
+        pieceValue[
+            target.toLowerCase()
+        ] || 0;
+
+
+    const attacker =
+        board[
+            move.from[1]
+        ][
+            move.from[0]
+        ];
+
+
+    const attackerValue =
+        pieceValue[
+            attacker.toLowerCase()
+        ] || 0;
+
+
+    // MVV-LVA:
+    // wertvolle Figur schlagen
+    // mit möglichst billiger Figur
+
+    return (
+        capturedValue * 10 -
+        attackerValue
+    );
 }
 
 
-// ==========================
-// MINIMAX + ALPHA BETA
-// ==========================
+// ============================================================
+// ZÜGE SORTIEREN
+// ============================================================
+
+function orderMoves(board, moves) {
+
+    return moves.sort(
+        (a, b) =>
+            moveOrderValue(board, b) -
+            moveOrderValue(board, a)
+    );
+}
+
+
+// ============================================================
+// MINIMAX
+// ALPHA-BETA
+// ============================================================
 
 function minimax(
     board,
@@ -368,9 +566,31 @@ function minimax(
     aiColor
 ) {
 
-    // Ende der Suche
-    if (depth === 0) {
-        return evaluateBoard(board, aiColor);
+    searchedNodes++;
+
+
+    // Sicherheitslimit
+
+    if (
+        MAX_NODES > 0 &&
+        searchedNodes >= MAX_NODES
+    ) {
+
+        return evaluateBoard(
+            board,
+            aiColor
+        );
+    }
+
+
+    // Tiefe erreicht
+
+    if (depth <= 0) {
+
+        return evaluateBoard(
+            board,
+            aiColor
+        );
     }
 
 
@@ -379,132 +599,219 @@ function minimax(
             ? aiColor
             : oppositeColor(aiColor);
 
-    const moves = getAllMoves(board, currentColor);
 
-    if (moves.length === 0) {
-        return evaluateBoard(board, aiColor);
+    const key =
+        boardKey(
+            board,
+            depth,
+            currentColor
+        );
+
+
+    // Schon berechnet?
+
+    if (
+        transpositionTable.has(key)
+    ) {
+
+        return transpositionTable.get(key);
     }
 
 
-    const orderedMoves =
-        orderMoves(board, moves);
+    let moves =
+        getAllMoves(
+            board,
+            currentColor
+        );
 
 
-    // ==========================
+    // Keine Züge
+
+    if (!moves.length) {
+
+        const score =
+            evaluateBoard(
+                board,
+                aiColor
+            );
+
+        transpositionTable.set(
+            key,
+            score
+        );
+
+        return score;
+    }
+
+
+    // Gute Züge zuerst
+
+    moves =
+        orderMoves(
+            board,
+            moves
+        );
+
+
+    // ========================================================
     // MAX
-    // ==========================
+    // ========================================================
 
     if (maximizing) {
 
         let best = -Infinity;
 
-        for (const move of orderedMoves) {
+
+        for (const move of moves) {
 
             const newBoard =
                 cloneBoard(board);
 
+
             const result =
-                applyMove(newBoard, move);
+                applyMove(
+                    newBoard,
+                    move
+                );
 
 
-            // König geschlagen
-            if (result.winner === aiColor) {
-                return 100000;
-            }
+            // KI schlägt König
 
             if (
-                result.winner ===
-                oppositeColor(aiColor)
+                result.winner === aiColor
             ) {
-                continue;
+
+                best = 100000;
+
+                break;
             }
 
 
-            const score = minimax(
-                newBoard,
-                depth - 1,
-                alpha,
-                beta,
-                false,
-                aiColor
-            );
+            const score =
+                minimax(
+                    newBoard,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    false,
+                    aiColor
+                );
 
-            best = Math.max(best, score);
 
-            alpha = Math.max(alpha, best);
+            best =
+                Math.max(
+                    best,
+                    score
+                );
+
+
+            alpha =
+                Math.max(
+                    alpha,
+                    best
+                );
+
+
+            // Alpha-Beta Cutoff
 
             if (beta <= alpha) {
                 break;
             }
         }
+
+
+        transpositionTable.set(
+            key,
+            best
+        );
+
 
         return best;
     }
 
 
-    // ==========================
+    // ========================================================
     // MIN
-    // ==========================
+    // ========================================================
 
     else {
 
         let best = Infinity;
 
-        for (const move of orderedMoves) {
+
+        for (const move of moves) {
 
             const newBoard =
                 cloneBoard(board);
 
-            const result =
-                applyMove(newBoard, move);
 
+            const result =
+                applyMove(
+                    newBoard,
+                    move
+                );
+
+
+            // Gegner schlägt König
 
             if (
                 result.winner ===
                 oppositeColor(aiColor)
             ) {
-                return -100000;
+
+                best = -100000;
+
+                break;
             }
 
-            if (result.winner === aiColor) {
-                continue;
-            }
+
+            const score =
+                minimax(
+                    newBoard,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    true,
+                    aiColor
+                );
 
 
-            const score = minimax(
-                newBoard,
-                depth - 1,
-                alpha,
-                beta,
-                true,
-                aiColor
-            );
+            best =
+                Math.min(
+                    best,
+                    score
+                );
 
-            best = Math.min(best, score);
 
-            beta = Math.min(beta, best);
+            beta =
+                Math.min(
+                    beta,
+                    best
+                );
+
+
+            // Beta Cutoff
 
             if (beta <= alpha) {
                 break;
             }
         }
+
+
+        transpositionTable.set(
+            key,
+            best
+        );
+
 
         return best;
     }
 }
 
 
-// ==========================
-// NEUE KI
-// ==========================
-//
-// Tiefe 3:
-// KI-Zug
-//   -> Gegnerzug
-//      -> KI-Zug
-//
-// Danach wird die Stellung bewertet.
-//
+// ============================================================
+// BESTEN ZUG FINDEN
+// ============================================================
 
 export function getRandomMove(
     board,
@@ -513,81 +820,161 @@ export function getRandomMove(
 ) {
 
     const moves =
-        getAllMoves(board, aiColor);
+        getAllMoves(
+            board,
+            aiColor
+        );
+
 
     if (!moves.length) {
         return null;
     }
 
 
-    // ==========================
-    // SKILL
-    // ==========================
+    // Alte Berechnungen löschen
 
-    let depth = 10;
+    transpositionTable.clear();
+
+    searchedNodes = 0;
+
+
+    // ========================================================
+    // SKILL → TIEFE
+    // ========================================================
+
+    let depth;
+
 
     if (typeof skill === "number") {
 
-        if (skill <= 1) depth = 1;
-        else if (skill === 2) depth = 2;
-        else depth = 10;
+        if (skill <= 1) {
+            depth = 3;
+        }
+
+        else if (skill === 2) {
+            depth = 5;
+        }
+
+        else if (skill === 3) {
+            depth = 7;
+        }
+
+        else if (skill === 4) {
+            depth = 8;
+        }
+
+        else {
+            depth = MAX_DEPTH;
+        }
+
+    } else {
+
+        depth = MAX_DEPTH;
     }
 
 
-    // ==========================
-    // ZÜGE MISCHEN
-    // ==========================
+    // Sicherheit
 
-    // Dadurch entscheidet die KI bei
-    // gleich guten Zügen nicht immer gleich.
-
-    const shuffled =
-        [...moves].sort(() => Math.random() - 0.5);
+    depth =
+        Math.min(
+            depth,
+            MAX_DEPTH
+        );
 
 
-    let bestMove = shuffled[0];
+    // ========================================================
+    // ZÜGE SORTIEREN
+    // ========================================================
+
+    const ordered =
+        orderMoves(
+            board,
+            [...moves]
+        );
+
+
+    let bestMove = ordered[0];
     let bestScore = -Infinity;
 
 
-    // ==========================
-    // ALLE ZÜGE TESTEN
-    // ==========================
+    // ========================================================
+    // ROOT SEARCH
+    // ========================================================
 
-    for (const move of shuffled) {
+    for (const move of ordered) {
 
-        const newBoard =
-            cloneBoard(board);
+        // Bei bereits gefundenem König
+        // sofort zurückgeben
 
-        const result =
-            applyMove(newBoard, move);
+        const target =
+            board[
+                move.to[1]
+            ][
+                move.to[0]
+            ];
 
 
-        // König sofort schlagen
-        if (result.winner === aiColor) {
+        if (
+            target &&
+            target.toLowerCase() === "k"
+        ) {
+
             return move;
         }
 
 
-        const score = minimax(
-            newBoard,
-
-            // eigener Zug war schon Ebene 1
-            depth - 1,
-
-            -Infinity,
-            Infinity,
-
-            false,
-            aiColor
-        );
+        const newBoard =
+            cloneBoard(board);
 
 
-        if (score > bestScore) {
+        const result =
+            applyMove(
+                newBoard,
+                move
+            );
+
+
+        if (
+            result.winner === aiColor
+        ) {
+
+            return move;
+        }
+
+
+        const score =
+            minimax(
+                newBoard,
+
+                // Root-Zug zählt als
+                // erste Ebene
+                depth - 1,
+
+                -Infinity,
+                Infinity,
+
+                false,
+
+                aiColor
+            );
+
+
+        if (
+            score > bestScore
+        ) {
 
             bestScore = score;
             bestMove = move;
         }
     }
+
+
+    console.log(
+        "KI:",
+        "Tiefe =", depth,
+        "| Bewertung =", bestScore,
+        "| untersuchte Knoten =", searchedNodes
+    );
 
 
     return bestMove;
